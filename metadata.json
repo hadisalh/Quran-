@@ -1,0 +1,8 @@
+{
+  "name": "Copy of Copy of Copy of آية ترشدك",
+  "description": "تطبيق إسلامي ذكي يستخدم الذكاء الاصطناعي لفهم مشاعرك وتوجيهك إلى الآيات القرآنية المناسبة التي تصف حالتك وتقدم لك العلاج الرباني.",
+  "requestFramePermissions": [
+    "microphone",
+    "geolocation"
+  ]
+}

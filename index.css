@@ -1,0 +1,80 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply font-sans bg-slate-900 text-slate-100;
+    overscroll-behavior-y: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  
+  /* Better focus styles for accessibility */
+  :focus-visible {
+    @apply outline-none ring-2 ring-amber-400 ring-offset-2 ring-offset-slate-900;
+  }
+}
+
+/* Font Configuration */
+.font-ui {
+  font-family: 'Lateef', serif;
+}
+
+.quran-text {
+  font-family: 'UthmanicHafs', 'Amiri', serif;
+  font-size: 1.85rem;
+  line-height: 3.5rem;
+  text-align: justify;
+  word-spacing: 0.1rem;
+}
+
+/* Fallback font if webfont fails */
+@font-face {
+  font-family: 'UthmanicHafs';
+  src: url('https://fonts.qurancomplex.gov.sa/wp-content/uploads/2021/04/KFGQPC-Uthman-Taha-Naskh-Regular.woff') format('woff');
+  font-display: swap;
+}
+
+.verse-end-symbol {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1' stroke-linecap='round' stroke-linejoin='round' class='lucide lucide-star'%3e%3cpolygon points='12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2'/%3e%3c/svg%3e");
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  font-family: 'Amiri', serif;
+  color: #f59e0b; /* amber-500 */
+  font-size: 0.9rem;
+  font-weight: bold;
+  margin: 0 0.3rem;
+  position: relative;
+  top: 0.2rem;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #0f172a; 
+}
+::-webkit-scrollbar-thumb {
+  background: #334155; 
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #475569; 
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out forwards;
+}

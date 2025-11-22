@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="h-full antialiased">
+  <head>
+    <meta charset="UTF-8" />
+    <!-- Favicon: Custom SVG Logo Encoded -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='none'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23f59e0b'/%3E%3Cstop offset='100%25' stop-color='%23d97706'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect x='20' y='20' width='60' height='60' rx='10' transform='rotate(45 50 50)' fill='url(%23g)' fill-opacity='1'/%3E%3Cpath d='M32 45 C32 45 45 50 50 47 C55 50 68 45 68 45 V70 C68 70 55 75 50 72 C45 75 32 70 32 70 V45 Z' fill='%23ffffff'/%3E%3Cpath d='M50 47 V72' stroke='%23f59e0b' stroke-width='2'/%3E%3Ccircle cx='50' cy='22' r='4' fill='url(%23g)'/%3E%3C/svg%3E" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <title>آية ترشدك | رفيقك القرآني الذكي</title>
+    <meta name="description" content="تطبيق إسلامي شامل يجمع بين الذكاء الاصطناعي والروحانية. دردشة إرشادية، أذكار، مواقيت الصلاة، رقية شرعية، والمزيد.">
+    <meta name="theme-color" content="#0f172a" />
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400;1,700&family=Lateef:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS CDN (Safety Net for styling) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Amiri', 'serif'],
+              serif: ['Amiri', 'serif'],
+              quran: ['UthmanicHafs', 'Amiri', 'serif'],
+              ui: ['Lateef', 'cursive'],
+            },
+            colors: {
+              slate: {
+                850: '#151f32',
+                900: '#0f172a',
+                950: '#020617',
+              },
+              amber: {
+                400: '#fbbf24',
+                500: '#f59e0b',
+                600: '#d97706',
+              }
+            }
+          }
+        }
+      }
+    </script>
+
+    <style>
+      /* Global Overrides to ensure dark theme persistence */
+      body {
+        background-color: #0f172a;
+        color: #f1f5f9;
+      }
+      
+      /* Quran Font Fallback */
+      @font-face {
+        font-family: 'UthmanicHafs';
+        src: url('https://fonts.qurancomplex.gov.sa/wp-content/uploads/2021/04/KFGQPC-Uthman-Taha-Naskh-Regular.woff') format('woff');
+        font-display: swap;
+      }
+
+      /* Scrollbar Styling */
+      ::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #0f172a; 
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #334155; 
+        border-radius: 10px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #475569; 
+      }
+      
+      /* Animations */
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      .animate-fade-in {
+        animation: fadeIn 0.5s ease-out forwards;
+      }
+    </style>
+<script type="importmap">
+{
+  "imports": {
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.30.0",
+    "vite": "https://aistudiocdn.com/vite@^7.2.4",
+    "@vitejs/plugin-react": "https://aistudiocdn.com/@vitejs/plugin-react@^5.1.1"
+  }
+}
+</script>
+</head>
+  <body class="bg-slate-900 text-slate-100 h-full overflow-hidden selection:bg-amber-500 selection:text-slate-900">
+    <div id="root" class="h-full"></div>
+    <script type="module" src="/index.tsx"></script>
+  </body>
+</html>
