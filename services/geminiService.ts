@@ -50,9 +50,9 @@ const systemInstruction = `أنت مساعد إسلامي حكيم. هدفك م�
 
 export async function getGuidance(userInput: string): Promise<GuidanceResponse> {
   try {
-    // Using gemini-1.5-flash as it is the most stable model currently
+    // Updated to gemini-2.5-flash
     const response = await ai.models.generateContent({
-      model: "gemini-1.5-flash",
+      model: "gemini-2.5-flash",
       contents: userInput,
       config: {
         responseMimeType: "application/json",
@@ -86,7 +86,6 @@ export async function getGuidance(userInput: string): Promise<GuidanceResponse> 
     
     // Basic validation
     if (!parsedResponse.descriptiveAyah || !parsedResponse.solutionAyah) {
-       // Fallback logic could go here, but for now throw to trigger UI error
        throw new Error("Invalid response structure");
     }
 
