@@ -4,7 +4,7 @@ import { UserMessageBubble } from '../components/UserMessageBubble';
 import { AiConsultationBubble } from '../components/AiConsultationBubble';
 import { AiConsultantTypingBubble } from '../components/AiConsultantTypingBubble';
 import { ErrorMessageBubble } from '../components/ErrorMessageBubble';
-import { getConsultationStream } from '../services/consultationService';
+import { getConsultation } from '../services/consultationService';
 import { Scale } from '../components/icons';
 
 interface Message {
@@ -48,27 +48,14 @@ export const ConsultationView: React.FC = () => {
     setError(null);
 
     try {
-      const stream = await getConsultationStream(text);
+      const responseText = await getConsultation(text);
+      const aiMessage: Message = { 
+          type: 'ai', 
+          text: responseText, 
+          id: new Date().toISOString() + '-ai' 
+      };
+      setMessages(prev => [...prev, aiMessage]);
       
-      let aiMessageId: string | null = null;
-
-      for await (const chunk of stream) {
-        const chunkText = chunk.text;
-        if (aiMessageId === null) {
-          // First chunk arrived, hide typing indicator and add the AI message bubble
-          setIsLoading(false);
-          const newAiMessageId = new Date().toISOString() + '-ai';
-          aiMessageId = newAiMessageId;
-          setMessages(prev => [...prev, { type: 'ai', text: chunkText, id: newAiMessageId }]);
-        } else {
-          // Append text to the existing AI message bubble
-          setMessages(prev =>
-            prev.map(msg =>
-              msg.id === aiMessageId ? { ...msg, text: msg.text + chunkText } : msg
-            )
-          );
-        }
-      }
     } catch (err: any) {
       console.error(err);
       setError(err.message || 'عذرًا، حدث خطأ أثناء طلب الاستشارة. يرجى المحاولة مرة أخرى.');

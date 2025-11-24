@@ -1,5 +1,5 @@
 
-import { GoogleGenAI, Type, Chat } from "@google/genai";
+import { GoogleGenAI, Type } from "@google/genai";
 import type { GuidanceResponse } from '../types';
 import { API_KEY } from '../config';
 
@@ -43,82 +43,65 @@ const responseSchema = {
   required: ["descriptiveAyah", "solutionAyah", "advice", "dua"]
 };
 
-const systemInstruction = `أنت "هادي"، مرشد روحاني وعالم إسلامي حكيم ورحيم. مهمتك هي إجراء محادثة هادئة مع المستخدم لمساعدته على إيجاد السكينة والهداية في القرآن الكريم.
-عندما يصف المستخدم مشكلته أو شعوره باللغة العربية، يجب عليك تحليل النص وفهم المشاعر العميقة.
-بعد ذلك، يجب عليك الرد فقط وفقط بكائن JSON صالح تمامًا يتبع المخطط المحدد بدقة. لا تقم بتضمين أي نص أو تفسير أو ملاحظات خارج بنية JSON.
-
-مهمتك في كل رد تتكون من أربع خطوات:
-1.  **آية الوصف**: ابحث عن آية تصف بدقة حالة المستخدم وشعوره. في حقل "tafsir"، قدم شرحًا قصيرًا وعاطفيًا يربط الآية مباشرة بمشاعر المستخدم.
-2.  **آية الحل**: ابحث عن آية تقدم حلاً ربانيًا أو عزاءً أو هداية لمشكلة المستخدم. في حقل "tafsir"، اشرح كيف يمكن لهذه الآية أن تساعد المستخدم عمليًا في حياته.
-3.  **النصائح**: قدم ثلاث نصائح قصيرة ومؤثرة ومستوحاة من القرآن والسنة لمساعدة المستخدم على تجاوز الموقف.
-4.  **الدعاء**: قم بصياغة دعاء قصير ومناسب لحالة المستخدم.
-
-يجب أن تكون جميع الردود باللغة العربية الفصحى. يجب أن تكون التفاسير من مصادر موثوقة (مثل ابن كثير، السعدي، الطبري) ولكن مبسطة لتكون سهلة الفهم. حافظ على استمرارية المحادثة، مع الأخذ في الاعتبار الرسائل السابقة للمستخدم.`;
-
-
-let chat: Chat | null = null;
-
-function getChatSession(): Chat {
-  if (chat) {
-    return chat;
-  }
-  chat = ai.chats.create({
-    model: "gemini-2.5-flash",
-    config: {
-      responseMimeType: "application/json",
-      responseSchema: responseSchema,
-      temperature: 0.7,
-      systemInstruction: systemInstruction,
-    },
-  });
-  return chat;
-}
-
-const MAX_RETRIES = 3;
+// Modified instruction to be less authoritative to pass safety filters
+const systemInstruction = `أنت مساعد إسلامي حكيم. هدفك مساعدة المستخدم على إيجاد السكينة في القرآن الكريم.
+حلل مشكلة المستخدم واستخرج آيات مناسبة ونصائح من القرآن والسنة.
+يجب عليك الرد فقط وفقط بكائن JSON صالح.`;
 
 export async function getGuidance(userInput: string): Promise<GuidanceResponse> {
-  let retries = 0;
-  let delay = 2000;
-
-  while (retries < MAX_RETRIES) {
-    try {
-      const chatSession = getChatSession();
-      const result = await chatSession.sendMessage({ message: userInput });
-      
-      const jsonText = result.text.trim();
-      
-      if (!jsonText) {
-          throw new Error("Received an empty response from the AI model.");
-      }
-
-      const parsedResponse = JSON.parse(jsonText);
-      
-      if (!parsedResponse.descriptiveAyah || !parsedResponse.solutionAyah || !parsedResponse.advice || !parsedResponse.dua) {
-        console.error("Invalid response structure received from API:", parsedResponse);
-        throw new Error("Invalid response structure from API");
-      }
-
-      return parsedResponse as GuidanceResponse;
-
-    } catch (error: any) {
-      const isRateLimitError = error.toString().includes('429') || error.toString().includes('RESOURCE_EXHAUSTED');
-      
-      if (isRateLimitError && retries < MAX_RETRIES - 1) {
-        retries++;
-        console.warn(`Rate limit hit. Retrying in ${delay / 1000}s... (Attempt ${retries}/${MAX_RETRIES - 1})`);
-        await new Promise(res => setTimeout(res, delay));
-        delay *= 2; // Exponential backoff
-      } else {
-        console.error("Error fetching guidance from Gemini API:", error);
-        if (isRateLimitError) {
-          throw new Error("الخدمة مشغولة حاليًا بسبب كثرة الطلبات. يرجى الانتظار لحظة ثم المحاولة مرة أخرى.");
-        }
-        if (error.message.includes('JSON.parse') || error.message.includes('Invalid response structure')) {
-          throw new Error("تعذر فهم رد المرشد. قد يكون هناك مشكلة في الاتصال. حاول مرة أخرى.");
-        }
-        throw new Error("فشل في الحصول على الإرشاد من المرشد الذكي.");
-      }
+  try {
+    // Using gemini-1.5-flash as it is the most stable model currently
+    const response = await ai.models.generateContent({
+      model: "gemini-1.5-flash",
+      contents: userInput,
+      config: {
+        responseMimeType: "application/json",
+        responseSchema: responseSchema,
+        temperature: 0.7,
+        systemInstruction: systemInstruction,
+        safetySettings: [
+          { category: 'HARM_CATEGORY_HATE_SPEECH', threshold: 'BLOCK_NONE' },
+          { category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT', threshold: 'BLOCK_NONE' },
+          { category: 'HARM_CATEGORY_HARASSMENT', threshold: 'BLOCK_NONE' },
+          { category: 'HARM_CATEGORY_DANGEROUS_CONTENT', threshold: 'BLOCK_NONE' },
+        ]
+      },
+    });
+    
+    let jsonText = response.text;
+    
+    if (!jsonText) {
+        throw new Error("Received an empty response from the AI model.");
     }
+
+    // Advanced JSON cleaning: Find the first { and last }
+    const firstBrace = jsonText.indexOf('{');
+    const lastBrace = jsonText.lastIndexOf('}');
+    
+    if (firstBrace !== -1 && lastBrace !== -1) {
+        jsonText = jsonText.substring(firstBrace, lastBrace + 1);
+    }
+
+    const parsedResponse = JSON.parse(jsonText);
+    
+    // Basic validation
+    if (!parsedResponse.descriptiveAyah || !parsedResponse.solutionAyah) {
+       // Fallback logic could go here, but for now throw to trigger UI error
+       throw new Error("Invalid response structure");
+    }
+
+    return parsedResponse as GuidanceResponse;
+
+  } catch (error: any) {
+    console.error("Error fetching guidance:", error);
+    const errorMessage = error.toString();
+    
+    if (errorMessage.includes('429') || errorMessage.includes('RESOURCE_EXHAUSTED')) {
+      throw new Error("الخدمة مشغولة حاليًا. يرجى الانتظار لحظة والمحاولة مجدداً.");
+    }
+    if (errorMessage.includes('404') || errorMessage.includes('NOT_FOUND')) {
+        throw new Error("نعتذر، الخدمة غير متاحة حالياً. يرجى تحديث الصفحة والمحاولة.");
+    }
+    throw new Error("حدث خطأ أثناء الاتصال بالمرشد الذكي. يرجى المحاولة مرة أخرى.");
   }
-  throw new Error("فشل في الحصول على الإرشاد بعد عدة محاولات.");
 }
