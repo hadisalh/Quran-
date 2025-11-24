@@ -13,9 +13,9 @@ const systemInstruction = `أنت مساعد بحثي إسلامي متخصص ف
 
 export async function getConsultation(userInput: string): Promise<string> {
   try {
-    // Switch to gemini-1.5-flash for stability
+    // Switch to gemini-2.5-flash for best performance with new SDK
     const response = await ai.models.generateContent({
-      model: "gemini-1.5-flash",
+      model: "gemini-2.5-flash",
       contents: userInput,
       config: {
         temperature: 0.5,
