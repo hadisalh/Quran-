@@ -5,7 +5,7 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   build: {
-    target: 'esnext', // Ensure modern JS for the AI library
+    target: 'esnext',
     chunkSizeWarningLimit: 1600,
     outDir: 'dist',
     emptyOutDir: true,
@@ -13,7 +13,6 @@ export default defineConfig({
       output: {
         manualChunks(id) {
           if (id.includes('node_modules')) {
-            // Split vendor chunks to avoid large file warnings
             if (id.includes('react')) return 'react-vendor';
             if (id.includes('@google/genai')) return 'genai-vendor';
             return 'vendor';
