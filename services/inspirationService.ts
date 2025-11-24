@@ -26,9 +26,9 @@ export async function getInspiration(history: string[] = []): Promise<Inspiratio
         prompt += `\n\nتجنب هذه الآيات: ${history.join(', ')}`;
     }
     
-    // Switch to gemini-2.5-flash for best performance with new SDK
+    // Using gemini-1.5-flash for stability
     const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
+      model: "gemini-1.5-flash",
       contents: prompt,
       config: {
         responseMimeType: "application/json",
