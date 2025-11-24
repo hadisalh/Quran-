@@ -50,9 +50,9 @@ const systemInstruction = `أنت مساعد إسلامي حكيم. هدفك م�
 
 export async function getGuidance(userInput: string): Promise<GuidanceResponse> {
   try {
-    // Updated to gemini-2.5-flash
+    // Switch to gemini-1.5-flash for stability
     const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
+      model: "gemini-1.5-flash",
       contents: userInput,
       config: {
         responseMimeType: "application/json",
