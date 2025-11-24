@@ -197,7 +197,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({ onSubmit, isLoading }) => 
           onChange={handleTextChange}
           onKeyDown={handleKeyDown}
           placeholder="أخبرنا بما في قلبك..."
-          className="w-full max-h-48 p-3 pl-24 bg-slate-800 border-2 border-slate-700 rounded-xl focus:ring-2 focus:ring-amber-400 focus:border-amber-400 transition-colors text-slate-100 placeholder-slate-500 resize-none"
+          className="w-full max-h-48 p-3 pl-24 bg-slate-100 dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-amber-400 focus:border-amber-400 transition-colors text-slate-900 dark:text-slate-100 placeholder-slate-500 resize-none"
           disabled={isLoading}
           rows={1}
         />
@@ -207,23 +207,23 @@ export const ChatInput: React.FC<ChatInputProps> = ({ onSubmit, isLoading }) => 
                   type="button"
                   onClick={handleMicClick}
                   disabled={isLoading}
-                  className={`p-2 rounded-full ${isListening ? 'bg-red-500 animate-pulse' : micPermission === 'denied' ? 'bg-red-800/50' : 'bg-slate-700 hover:bg-slate-600'} text-slate-100 transition-colors`}
+                  className={`p-2 rounded-full ${isListening ? 'bg-red-500 animate-pulse' : micPermission === 'denied' ? 'bg-red-100 text-red-500 dark:bg-red-800/50 dark:text-red-300' : 'bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600'} text-slate-700 dark:text-slate-100 transition-colors`}
                   aria-label={micButtonAriaLabel}
                 >
-                  {isListening ? <MicOff className="w-5 h-5" /> : <Mic className={`w-5 h-5 ${micPermission === 'denied' ? 'text-red-400' : ''}`} />}
+                  {isListening ? <MicOff className="w-5 h-5 text-white" /> : <Mic className={`w-5 h-5`} />}
               </button>
             )}
             <button
               type="submit"
               disabled={isLoading || !text.trim()}
-              className="p-2 rounded-full bg-amber-500 text-slate-900 hover:bg-amber-600 disabled:bg-slate-600 disabled:cursor-not-allowed transition-all transform hover:scale-110"
+              className="p-2 rounded-full bg-amber-500 text-white dark:text-slate-900 hover:bg-amber-600 disabled:bg-slate-300 dark:disabled:bg-slate-600 disabled:cursor-not-allowed transition-all transform hover:scale-110"
               aria-label="اطلب الإرشاد"
             >
               <Send className="w-5 h-5" />
             </button>
         </div>
       </form>
-      {micError && <p className="text-red-400 text-xs text-center mt-2">{micError}</p>}
+      {micError && <p className="text-red-500 dark:text-red-400 text-xs text-center mt-2">{micError}</p>}
     </div>
   );
 };

@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { RotateCcw } from './icons';
 
@@ -56,16 +55,16 @@ export const TasbihSection: React.FC = () => {
   const strokeDashoffset = circumference - (progress / 100) * circumference;
 
   return (
-    <div className="bg-slate-800/50 p-6 rounded-2xl border border-slate-700 mb-8 text-center shadow-lg animate-fade-in relative overflow-hidden">
+    <div className="bg-white/50 dark:bg-slate-800/50 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 mb-8 text-center shadow-lg animate-fade-in relative overflow-hidden">
       {/* Decorative background glow */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-amber-500/5 blur-[100px] rounded-full pointer-events-none"></div>
 
       <div className="flex flex-col sm:flex-row justify-between items-center mb-6 relative z-10 gap-4">
-        <h2 className="text-2xl font-bold text-amber-400 flex items-center gap-2">
+        <h2 className="text-2xl font-bold text-amber-600 dark:text-amber-400 flex items-center gap-2">
           <span>📿</span> ركن التسبيح
         </h2>
-        <div className="bg-slate-900/80 px-4 py-2 rounded-full border border-slate-700 text-xs text-slate-400 shadow-inner">
-            مجموع تسبيحاتك: <span className="text-amber-400 font-bold text-base mr-1">{totalLifetime.toLocaleString('ar-EG')}</span>
+        <div className="bg-slate-100 dark:bg-slate-900/80 px-4 py-2 rounded-full border border-slate-200 dark:border-slate-700 text-xs text-slate-600 dark:text-slate-400 shadow-inner">
+            مجموع تسبيحاتك: <span className="text-amber-600 dark:text-amber-400 font-bold text-base mr-1">{totalLifetime.toLocaleString('ar-EG')}</span>
         </div>
       </div>
 
@@ -77,8 +76,8 @@ export const TasbihSection: React.FC = () => {
                 onClick={() => handleTargetChange(t as any)}
                 className={`px-4 py-1.5 rounded-full text-sm font-bold transition-all border ${
                     target === t 
-                    ? 'bg-amber-500 text-slate-900 border-amber-500 scale-105 shadow-lg shadow-amber-500/20' 
-                    : 'bg-slate-800 text-slate-400 border-slate-600 hover:border-slate-400'
+                    ? 'bg-amber-500 text-white dark:text-slate-900 border-amber-500 scale-105 shadow-lg shadow-amber-500/20' 
+                    : 'bg-white dark:bg-slate-800 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-600 hover:border-slate-400'
                 }`}
             >
                 {t === 'open' ? 'مفتوح' : t}
@@ -98,7 +97,7 @@ export const TasbihSection: React.FC = () => {
                 stroke="currentColor"
                 strokeWidth="12"
                 fill="transparent"
-                className="text-slate-700/50"
+                className="text-slate-200 dark:text-slate-700/50"
             />
             {/* Progress Circle */}
             <circle
@@ -117,16 +116,16 @@ export const TasbihSection: React.FC = () => {
         
         {/* Center Content */}
         <div className="absolute inset-0 flex flex-col items-center justify-center rounded-full m-4 group-active:scale-95 transition-transform duration-100">
-            <div className="absolute inset-0 bg-slate-800/30 rounded-full backdrop-blur-[2px]"></div>
-            <span className="relative text-7xl font-bold text-slate-100 font-sans tracking-wider drop-shadow-lg select-none">
+            <div className="absolute inset-0 bg-white/30 dark:bg-slate-800/30 rounded-full backdrop-blur-[2px]"></div>
+            <span className="relative text-7xl font-bold text-slate-800 dark:text-slate-100 font-sans tracking-wider drop-shadow-lg select-none">
                 {count.toLocaleString('ar-EG')}
             </span>
             {target !== 'open' && (
-                <span className="relative text-sm text-slate-400 mt-2 font-bold bg-slate-900/60 px-3 py-0.5 rounded-full">
+                <span className="relative text-sm text-slate-500 dark:text-slate-400 mt-2 font-bold bg-slate-100/60 dark:bg-slate-900/60 px-3 py-0.5 rounded-full">
                     من {target.toLocaleString('ar-EG')}
                 </span>
             )}
-            <p className="relative text-xs text-amber-500/70 mt-2 animate-pulse">اضغط للعد</p>
+            <p className="relative text-xs text-amber-600/70 dark:text-amber-500/70 mt-2 animate-pulse">اضغط للعد</p>
         </div>
         
         {/* Ripple effect hint ring */}
@@ -135,7 +134,7 @@ export const TasbihSection: React.FC = () => {
 
       <button 
         onClick={(e) => { e.stopPropagation(); handleReset(); }}
-        className="flex items-center gap-2 mx-auto px-5 py-2 rounded-full bg-slate-700/50 hover:bg-slate-700 text-slate-300 transition-colors hover:text-white border border-transparent hover:border-slate-500"
+        className="flex items-center gap-2 mx-auto px-5 py-2 rounded-full bg-slate-100 dark:bg-slate-700/50 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition-colors border border-transparent hover:border-slate-300 dark:hover:border-slate-500"
         aria-label="تصفير العداد"
       >
         <RotateCcw className="w-4 h-4" />

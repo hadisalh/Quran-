@@ -12,11 +12,11 @@ interface AiMessageBubbleProps {
 
 const Section: React.FC<{ title: string; icon: ReactNode; children: ReactNode }> = ({ title, icon, children }) => (
   <div className="relative pl-8">
-    <div className="absolute top-0 right-0 flex items-center justify-center w-8 h-8 rounded-full bg-slate-900/70 border border-slate-700">
+    <div className="absolute top-0 right-0 flex items-center justify-center w-8 h-8 rounded-full bg-white dark:bg-slate-900/70 border border-slate-200 dark:border-slate-700 shadow-sm">
       {icon}
     </div>
-    <div className="pt-1 pb-4 border-r-2 border-slate-700/60 pr-8">
-      <h2 className="text-lg sm:text-xl font-bold mb-3 text-amber-400">{title}</h2>
+    <div className="pt-1 pb-4 border-r-2 border-slate-200 dark:border-slate-700/60 pr-8">
+      <h2 className="text-lg sm:text-xl font-bold mb-3 text-amber-600 dark:text-amber-400">{title}</h2>
       {children}
     </div>
   </div>
@@ -32,37 +32,37 @@ export const AiMessageBubble: React.FC<AiMessageBubbleProps> = ({ guidance, prob
 
   return (
     <div className="flex items-start justify-start gap-3 animate-fade-in">
-      <div className="flex-shrink-0 w-10 h-10 rounded-full bg-slate-700 flex items-center justify-center border-2 border-slate-600">
-        <CircleUserRound className="w-6 h-6 text-amber-300" />
+      <div className="flex-shrink-0 w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center border-2 border-slate-200 dark:border-slate-600">
+        <CircleUserRound className="w-6 h-6 text-amber-500 dark:text-amber-300" />
       </div>
 
-      <div className="bg-slate-800 rounded-xl rounded-bl-none p-4 w-full max-w-2xl">
-        <p className="font-bold text-slate-300 mb-4">هادي</p>
+      <div className="bg-white dark:bg-slate-800 rounded-xl rounded-bl-none p-4 w-full max-w-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
+        <p className="font-bold text-slate-500 dark:text-slate-300 mb-4">هادي</p>
         <div className="space-y-2">
-          <Section title="آية تصف حالتك" icon={<ClipboardList className="w-5 h-5 text-amber-400"/>}>
+          <Section title="آية تصف حالتك" icon={<ClipboardList className="w-5 h-5 text-amber-500 dark:text-amber-400"/>}>
             <AyahCard ayah={guidance.descriptiveAyah} />
           </Section>
 
-          <Section title="آية تحمل الحل" icon={<Lightbulb className="w-5 h-5 text-amber-400"/>}>
+          <Section title="آية تحمل الحل" icon={<Lightbulb className="w-5 h-5 text-amber-500 dark:text-amber-400"/>}>
             <AyahCard ayah={guidance.solutionAyah} />
           </Section>
 
-          <Section title="نصائح إيمانية" icon={<HeartHandshake className="w-5 h-5 text-amber-400"/>}>
-            <div className="bg-slate-900/50 border border-slate-700 rounded-lg p-4">
+          <Section title="نصائح إيمانية" icon={<HeartHandshake className="w-5 h-5 text-amber-500 dark:text-amber-400"/>}>
+            <div className="bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-lg p-4">
               <ul className="space-y-3">
                 {guidance.advice.map((tip, index) => (
                   <li key={index} className="flex items-start gap-3">
-                    <span className="text-amber-400 mt-1">✦</span>
-                    <p className="text-slate-200 text-sm sm:text-base">{tip}</p>
+                    <span className="text-amber-500 dark:text-amber-400 mt-1">✦</span>
+                    <p className="text-slate-700 dark:text-slate-200 text-sm sm:text-base">{tip}</p>
                   </li>
                 ))}
               </ul>
             </div>
           </Section>
 
-          <Section title="دعاء مقترح" icon={<Quote className="w-5 h-5 text-amber-400"/>}>
-            <div className="bg-slate-900/50 border border-slate-700 rounded-lg p-4 text-center">
-              <p className="text-slate-200 sm:text-lg italic">"{guidance.dua}"</p>
+          <Section title="دعاء مقترح" icon={<Quote className="w-5 h-5 text-amber-500 dark:text-amber-400"/>}>
+            <div className="bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-lg p-4 text-center">
+              <p className="text-slate-700 dark:text-slate-200 sm:text-lg italic">"{guidance.dua}"</p>
             </div>
           </Section>
           
@@ -71,7 +71,7 @@ export const AiMessageBubble: React.FC<AiMessageBubbleProps> = ({ guidance, prob
               <button 
                 onClick={handleSave} 
                 disabled={isSaved}
-                className="flex items-center gap-2 mx-auto px-4 py-2 rounded-lg bg-slate-700 hover:bg-slate-600 disabled:bg-green-800/50 disabled:cursor-not-allowed transition-colors text-slate-100 disabled:text-green-300"
+                className="flex items-center gap-2 mx-auto px-4 py-2 rounded-lg bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 disabled:bg-green-100 dark:disabled:bg-green-800/50 disabled:cursor-not-allowed transition-colors text-slate-700 dark:text-slate-100 disabled:text-green-700 dark:disabled:text-green-300"
               >
                 <Save className="w-5 h-5" />
                 <span>{isSaved ? 'تم الحفظ في دفتر هدايتي' : 'حفظ في دفتر هدايتي'}</span>

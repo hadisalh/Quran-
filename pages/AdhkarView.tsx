@@ -84,17 +84,17 @@ const adhkarData: AdhkarCategory[] = [
 
 const AccordionItem: React.FC<{ title: string; children: React.ReactNode; isOpen: boolean; onClick: () => void; }> = ({ title, children, isOpen, onClick }) => {
   return (
-    <div className="border-b border-slate-700 last:border-b-0">
+    <div className="border-b border-slate-200 dark:border-slate-700 last:border-b-0">
       <button
         onClick={onClick}
-        className={`w-full flex justify-between items-center text-right p-5 focus:outline-none transition-colors ${isOpen ? 'bg-slate-700/30' : 'hover:bg-slate-700/50'}`}
+        className={`w-full flex justify-between items-center text-right p-5 focus:outline-none transition-colors ${isOpen ? 'bg-slate-100 dark:bg-slate-700/30' : 'hover:bg-slate-50 dark:hover:bg-slate-700/50'}`}
         aria-expanded={isOpen}
       >
-        <h2 className={`text-xl font-bold transition-colors font-serif ${isOpen ? 'text-amber-400' : 'text-slate-100'}`}>{title}</h2>
+        <h2 className={`text-xl font-bold transition-colors font-serif ${isOpen ? 'text-amber-600 dark:text-amber-400' : 'text-slate-800 dark:text-slate-100'}`}>{title}</h2>
         <ChevronDown className={`w-6 h-6 text-slate-400 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} />
       </button>
       <div className={`overflow-hidden transition-all duration-500 ease-in-out ${isOpen ? 'max-h-[3000px] opacity-100' : 'max-h-0 opacity-0'}`}>
-        <div className="p-4 bg-slate-800/30 space-y-4">
+        <div className="p-4 bg-slate-50 dark:bg-slate-800/30 space-y-4">
           {children}
         </div>
       </div>
@@ -119,14 +119,14 @@ export const AdhkarView: React.FC = () => {
 
   return (
     <div className="h-full flex flex-col p-4 sm:p-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 sticky top-0 z-20 bg-slate-900/95 backdrop-blur-sm py-3 -mx-4 px-4 border-b border-slate-800 shadow-lg">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 sticky top-0 z-20 bg-slate-50/95 dark:bg-slate-900/95 backdrop-blur-sm py-3 -mx-4 px-4 border-b border-slate-200 dark:border-slate-800 shadow-lg">
             <div className="flex items-center gap-3">
-                <ShieldCheck className="w-8 h-8 text-amber-400" />
-                <h1 className="text-3xl font-bold text-amber-400 font-serif">حصن المسلم</h1>
+                <ShieldCheck className="w-8 h-8 text-amber-500 dark:text-amber-400" />
+                <h1 className="text-3xl font-bold text-amber-600 dark:text-amber-400 font-serif">حصن المسلم</h1>
             </div>
             <button 
                 onClick={resetAllAdhkar}
-                className="flex items-center justify-center gap-2 bg-slate-800 hover:bg-amber-500 hover:text-slate-900 text-slate-200 px-4 py-2.5 rounded-xl text-sm font-bold transition-all shadow-md border border-slate-600 hover:border-amber-400"
+                className="flex items-center justify-center gap-2 bg-white dark:bg-slate-800 hover:bg-amber-500 hover:text-white dark:hover:text-slate-900 text-slate-600 dark:text-slate-200 px-4 py-2.5 rounded-xl text-sm font-bold transition-all shadow-md border border-slate-200 dark:border-slate-600 hover:border-amber-400"
             >
                 <RotateCcw className="w-4 h-4" />
                 بدء يوم جديد
@@ -138,11 +138,11 @@ export const AdhkarView: React.FC = () => {
             
             <div className="space-y-4">
                 <div className="px-2">
-                    <h3 className="text-2xl font-bold text-slate-100 mb-2 font-serif">الأذكار المقيدة</h3>
-                    <p className="text-slate-400 text-sm leading-relaxed">الأذكار المرتبطة بوقت أو عدد معين. يتم حفظ تقدمك تلقائياً في المتصفح.</p>
+                    <h3 className="text-2xl font-bold text-slate-800 dark:text-slate-100 mb-2 font-serif">الأذكار المقيدة</h3>
+                    <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">الأذكار المرتبطة بوقت أو عدد معين. يتم حفظ تقدمك تلقائياً في المتصفح.</p>
                 </div>
                 
-                <div className="rounded-2xl border border-slate-700 bg-slate-800 overflow-hidden shadow-xl animate-fade-in">
+                <div className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 overflow-hidden shadow-xl animate-fade-in">
                 {adhkarData.map((category, index) => (
                     <AccordionItem
                     key={category.id}
@@ -151,13 +151,13 @@ export const AdhkarView: React.FC = () => {
                     onClick={() => handleToggle(index)}
                     >
                         {category.items.map((item, itemIndex) => (
-                        <div key={itemIndex} className="relative p-5 bg-slate-900 rounded-xl border border-slate-700/50 hover:border-amber-500/30 transition-all shadow-sm group">
+                        <div key={itemIndex} className="relative p-5 bg-slate-50 dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700/50 hover:border-amber-500/30 transition-all shadow-sm group">
                              {/* Right Accent Line */}
                              <div className="absolute right-0 top-6 bottom-6 w-1 bg-amber-500/30 group-hover:bg-amber-500 transition-colors rounded-l-full"></div>
                              
                             <div className="pr-4">
-                                <p className="text-slate-100 leading-loose text-xl mb-5 font-serif text-justify">{item.text}</p>
-                                <div className="flex flex-col sm:flex-row justify-between items-end sm:items-center gap-4 pt-4 border-t border-slate-800">
+                                <p className="text-slate-800 dark:text-slate-100 leading-loose text-xl mb-5 font-serif text-justify">{item.text}</p>
+                                <div className="flex flex-col sm:flex-row justify-between items-end sm:items-center gap-4 pt-4 border-t border-slate-200 dark:border-slate-800">
                                     <div className="w-full sm:w-auto">
                                         <DhikrCounter 
                                             countString={item.count} 
@@ -165,7 +165,7 @@ export const AdhkarView: React.FC = () => {
                                             resetTrigger={resetTrigger}
                                         />
                                     </div>
-                                    <div className="flex items-center gap-2 text-slate-400 bg-slate-800 px-3 py-1.5 rounded-lg text-xs sm:text-sm border border-slate-700 w-full sm:w-auto justify-center sm:justify-start">
+                                    <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400 bg-white dark:bg-slate-800 px-3 py-1.5 rounded-lg text-xs sm:text-sm border border-slate-200 dark:border-slate-700 w-full sm:w-auto justify-center sm:justify-start">
                                         <span className="text-amber-500 text-base">💡</span>
                                         <span className="font-medium">{item.virtue}</span>
                                     </div>

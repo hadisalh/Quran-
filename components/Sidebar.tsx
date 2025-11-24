@@ -23,14 +23,14 @@ const NavItem: React.FC<NavItemProps> = ({ icon, label, isActive, onClick, badge
     onClick={onClick}
     className={`w-full flex items-center gap-4 p-3 rounded-lg text-right transition-colors ${
       isActive
-        ? 'bg-amber-400/20 text-amber-300'
-        : 'text-slate-300 hover:bg-slate-700/50'
+        ? 'bg-amber-100 text-amber-700 dark:bg-amber-400/20 dark:text-amber-300'
+        : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700/50'
     }`}
   >
     {icon}
     <span className="font-semibold">{label}</span>
     {badge !== undefined && badge > 0 && (
-        <span className="mr-auto bg-amber-500 text-slate-900 text-xs font-bold px-2 py-0.5 rounded-full">{badge}</span>
+        <span className="mr-auto bg-amber-500 text-white dark:text-slate-900 text-xs font-bold px-2 py-0.5 rounded-full">{badge}</span>
     )}
   </button>
 );
@@ -40,7 +40,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, activeView, o
     <>
       {/* Mobile Overlay */}
       <div
-        className={`fixed inset-0 bg-black/60 z-40 transition-opacity duration-300 md:hidden backdrop-blur-sm ${
+        className={`fixed inset-0 bg-slate-900/60 z-40 transition-opacity duration-300 md:hidden backdrop-blur-sm ${
           isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
         }`}
         onClick={onClose}
@@ -48,14 +48,14 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, activeView, o
       
       {/* Sidebar Content */}
       <aside
-        className={`fixed top-0 right-0 h-full w-72 bg-slate-800 border-l border-slate-700/50 p-4 transform transition-transform duration-300 ease-in-out z-50 md:relative md:translate-x-0 md:w-64 md:border-l-0 md:border-r border-slate-700/50 flex-shrink-0 shadow-2xl md:shadow-none ${
+        className={`fixed top-0 right-0 h-full w-72 bg-white dark:bg-slate-800 border-l border-slate-200 dark:border-slate-700/50 p-4 transform transition-transform duration-300 ease-in-out z-50 md:relative md:translate-x-0 md:w-64 md:border-l-0 md:border-r flex-shrink-0 shadow-2xl md:shadow-none ${
           isOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
       >
         <div className="flex justify-between items-center mb-8 px-2">
-          <h2 className="text-2xl font-bold text-amber-400 font-serif">هادي</h2>
-          <button onClick={onClose} className="p-2 rounded-full hover:bg-slate-700 md:hidden transition-colors">
-            <X className="w-6 h-6 text-slate-400" />
+          <h2 className="text-2xl font-bold text-amber-600 dark:text-amber-400 font-serif">هادي</h2>
+          <button onClick={onClose} className="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700 md:hidden transition-colors">
+            <X className="w-6 h-6 text-slate-500 dark:text-slate-400" />
           </button>
         </div>
         

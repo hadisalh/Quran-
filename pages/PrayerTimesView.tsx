@@ -229,7 +229,7 @@ export const PrayerTimesView: React.FC = () => {
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center h-full text-slate-400 animate-fade-in">
-        <Loader2 className="w-12 h-12 animate-spin text-amber-400 mb-4" />
+        <Loader2 className="w-12 h-12 animate-spin text-amber-500 dark:text-amber-400 mb-4" />
         <p>جاري تحديد الموقع وجلب المواقيت...</p>
       </div>
     );
@@ -239,11 +239,11 @@ export const PrayerTimesView: React.FC = () => {
     return (
       <div className="flex flex-col items-center justify-center h-full p-6 text-center animate-fade-in">
         <MapPin className="w-16 h-16 text-red-400 mb-4" />
-        <h2 className="text-xl font-bold text-slate-200 mb-2">تنبيه</h2>
-        <p className="text-slate-400 max-w-md mb-6">{error}</p>
+        <h2 className="text-xl font-bold text-slate-800 dark:text-slate-200 mb-2">تنبيه</h2>
+        <p className="text-slate-600 dark:text-slate-400 max-w-md mb-6">{error}</p>
         <button 
           onClick={() => window.location.reload()}
-          className="px-6 py-2 bg-slate-700 text-slate-200 rounded-lg hover:bg-slate-600 transition-colors"
+          className="px-6 py-2 bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-200 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors"
         >
           تحديث الصفحة
         </button>
@@ -255,26 +255,26 @@ export const PrayerTimesView: React.FC = () => {
     <div className="h-full flex flex-col p-4 sm:p-6 overflow-y-auto animate-fade-in">
       <div className="flex items-center justify-between mb-6">
          <div className="flex items-center gap-3">
-            <Clock className="w-8 h-8 text-amber-400" />
-            <h1 className="text-3xl font-bold text-amber-400">أوقات الصلاة</h1>
+            <Clock className="w-8 h-8 text-amber-600 dark:text-amber-400" />
+            <h1 className="text-3xl font-bold text-amber-600 dark:text-amber-400">أوقات الصلاة</h1>
          </div>
          <div className="text-left">
-             <p className="text-slate-200 font-bold">{data?.date.hijri.weekday.ar}</p>
-             <p className="text-slate-400 text-sm">{data?.date.hijri.day} {data?.date.hijri.month.ar} {data?.date.hijri.year}</p>
+             <p className="text-slate-800 dark:text-slate-200 font-bold">{data?.date.hijri.weekday.ar}</p>
+             <p className="text-slate-500 dark:text-slate-400 text-sm">{data?.date.hijri.day} {data?.date.hijri.month.ar} {data?.date.hijri.year}</p>
          </div>
       </div>
 
       {/* Countdown Card */}
-      <div className="bg-gradient-to-br from-slate-800 to-slate-900 border border-amber-500/30 rounded-2xl p-6 sm:p-8 mb-8 text-center shadow-lg relative overflow-hidden">
+      <div className="bg-gradient-to-br from-amber-50 to-white dark:from-slate-800 dark:to-slate-900 border border-amber-200 dark:border-amber-500/30 rounded-2xl p-6 sm:p-8 mb-8 text-center shadow-lg relative overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-amber-500 to-transparent opacity-50"></div>
         
-        <p className="text-slate-400 mb-2 text-lg">الصلاة القادمة</p>
-        <h2 className="text-4xl sm:text-5xl font-bold text-amber-400 mb-2 font-serif">
+        <p className="text-slate-500 dark:text-slate-400 mb-2 text-lg">الصلاة القادمة</p>
+        <h2 className="text-4xl sm:text-5xl font-bold text-amber-600 dark:text-amber-400 mb-2 font-serif">
           {nextPrayer ? PRAYER_NAMES_AR[nextPrayer] : '--'}
         </h2>
         
         <div className="flex justify-center items-baseline gap-2 mt-4" dir="ltr">
-            <span className="text-5xl sm:text-7xl font-mono font-bold text-slate-100 tracking-wider">
+            <span className="text-5xl sm:text-7xl font-mono font-bold text-slate-800 dark:text-slate-100 tracking-wider">
                 {timeRemaining || "00:00:00"}
             </span>
         </div>
@@ -290,17 +290,17 @@ export const PrayerTimesView: React.FC = () => {
                     key={prayer} 
                     className={`flex justify-between items-center p-4 rounded-xl border transition-all ${
                         isNext 
-                        ? 'bg-amber-500/10 border-amber-500/50 shadow-[0_0_15px_rgba(245,158,11,0.1)]' 
-                        : 'bg-slate-800/40 border-slate-700/50 hover:bg-slate-800'
+                        ? 'bg-amber-50 dark:bg-amber-500/10 border-amber-300 dark:border-amber-500/50 shadow-lg shadow-amber-100 dark:shadow-[0_0_15px_rgba(245,158,11,0.1)]' 
+                        : 'bg-white dark:bg-slate-800/40 border-slate-200 dark:border-slate-700/50 hover:bg-slate-50 dark:hover:bg-slate-800'
                     }`}
                 >
                     <div className="flex items-center gap-4">
-                        <div className={`w-2 h-2 rounded-full ${isNext ? 'bg-amber-500 animate-pulse' : 'bg-slate-600'}`}></div>
-                        <span className={`text-lg font-bold ${isNext ? 'text-amber-300' : 'text-slate-300'}`}>
+                        <div className={`w-2 h-2 rounded-full ${isNext ? 'bg-amber-500 animate-pulse' : 'bg-slate-300 dark:bg-slate-600'}`}></div>
+                        <span className={`text-lg font-bold ${isNext ? 'text-amber-700 dark:text-amber-300' : 'text-slate-600 dark:text-slate-300'}`}>
                             {PRAYER_NAMES_AR[prayer]}
                         </span>
                     </div>
-                    <span className={`text-xl font-mono ${isNext ? 'text-amber-300' : 'text-slate-200'}`} dir="ltr">
+                    <span className={`text-xl font-mono ${isNext ? 'text-amber-700 dark:text-amber-300' : 'text-slate-800 dark:text-slate-200'}`} dir="ltr">
                         {data ? formatTime12Hour(data.timings[prayer]) : '--:--'}
                     </span>
                 </div>
@@ -314,8 +314,8 @@ export const PrayerTimesView: React.FC = () => {
             onClick={toggleAdhan}
             className={`flex items-center gap-3 px-6 py-3 rounded-full transition-all duration-300 ${
                 isPlayingAdhan 
-                ? 'bg-amber-500 text-slate-900 shadow-[0_0_20px_rgba(245,158,11,0.4)]' 
-                : 'bg-slate-800 text-slate-300 hover:bg-slate-700 border border-slate-600'
+                ? 'bg-amber-500 text-white dark:text-slate-900 shadow-lg shadow-amber-200 dark:shadow-[0_0_20px_rgba(245,158,11,0.4)]' 
+                : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-600'
             }`}
         >
             {isPlayingAdhan ? <Pause className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
@@ -330,7 +330,7 @@ export const PrayerTimesView: React.FC = () => {
         </button>
       </div>
       
-      <p className="text-center text-slate-500 text-xs mt-6">
+      <p className="text-center text-slate-400 dark:text-slate-500 text-xs mt-6">
           يتم حساب المواقيت بناءً على موقعك الحالي (توقيت أم القرى / مكة المكرمة).
       </p>
     </div>

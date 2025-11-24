@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Check, RotateCcw } from './icons';
 
@@ -96,14 +95,14 @@ export const DhikrCounter: React.FC<DhikrCounterProps> = ({ countString, storage
           className={`relative w-32 h-11 flex items-center justify-center rounded-lg text-sm font-bold transition-all overflow-hidden border shadow-sm select-none ${
             isCompleted 
               ? 'bg-green-600 text-white border-green-500 cursor-default shadow-green-900/50' 
-              : 'bg-slate-800 text-slate-200 border-slate-600 hover:border-amber-500 active:scale-95'
+              : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 border-slate-200 dark:border-slate-600 hover:border-amber-500 dark:hover:border-amber-500 active:scale-95'
           }`}
           aria-label={`عداد الذكر. الحالي: ${currentCount} من ${target}`}
         >
             {/* Progress Background */}
             {!isCompleted && (
                 <div 
-                    className="absolute right-0 top-0 h-full bg-amber-500/20 transition-all duration-200 ease-out"
+                    className="absolute right-0 top-0 h-full bg-amber-100 dark:bg-amber-500/20 transition-all duration-200 ease-out"
                     style={{ width: `${progressPercent}%` }}
                 />
             )}
@@ -127,7 +126,7 @@ export const DhikrCounter: React.FC<DhikrCounterProps> = ({ countString, storage
         {currentCount > 0 && (
           <button 
               onClick={reset} 
-              className="p-2.5 rounded-full bg-slate-800 border border-slate-700 hover:bg-slate-700 hover:text-white text-slate-400 transition-colors"
+              className="p-2.5 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 hover:text-amber-600 dark:hover:text-white text-slate-400 transition-colors"
               aria-label="إعادة تعيين العداد"
           >
               <RotateCcw className="w-4 h-4" />
@@ -143,7 +142,7 @@ export const DhikrCounter: React.FC<DhikrCounterProps> = ({ countString, storage
         <div className="flex items-center gap-2">
             <button
               onClick={increment}
-              className="min-w-[5rem] h-11 px-4 flex items-center justify-center rounded-lg text-sm font-bold transition-all bg-slate-800 border border-slate-600 text-slate-200 hover:border-amber-500 active:scale-95 shadow-sm"
+              className="min-w-[5rem] h-11 px-4 flex items-center justify-center rounded-lg text-sm font-bold transition-all bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 text-slate-800 dark:text-slate-200 hover:border-amber-500 active:scale-95 shadow-sm"
               aria-label={`عداد الذكر المفتوح. الحالي: ${currentCount}`}
             >
               <span className="font-sans text-xl">{currentCount.toLocaleString('ar-EG')}</span>
@@ -151,14 +150,14 @@ export const DhikrCounter: React.FC<DhikrCounterProps> = ({ countString, storage
             {currentCount > 0 && (
               <button 
                   onClick={reset} 
-                  className="p-2.5 rounded-full bg-slate-800 border border-slate-700 hover:bg-slate-700 hover:text-white text-slate-400 transition-colors"
+                  className="p-2.5 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 hover:text-amber-600 dark:hover:text-white text-slate-400 transition-colors"
                   aria-label="إعادة تعيين العداد"
               >
                   <RotateCcw className="w-4 h-4" />
               </button>
             )}
         </div>
-        <span className="text-amber-400/80 bg-amber-900/20 px-3 py-1 rounded-md text-xs border border-amber-500/20 font-bold">{countString}</span>
+        <span className="text-amber-600 dark:text-amber-400/80 bg-amber-50 dark:bg-amber-900/20 px-3 py-1 rounded-md text-xs border border-amber-200 dark:border-amber-500/20 font-bold">{countString}</span>
     </div>
   );
 };
