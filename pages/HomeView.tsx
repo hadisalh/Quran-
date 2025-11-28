@@ -1,6 +1,6 @@
 import React from 'react';
 import type { View } from '../App';
-import { ChatBubble, Sparkles, Moon, Scale, ShieldCheck, ClipboardList, Clock } from '../components/icons';
+import { ChatBubble, Sparkles, Moon, ShieldCheck, ClipboardList, Clock } from '../components/icons';
 import { Logo } from '../components/Logo';
 
 interface HomeViewProps {
@@ -52,12 +52,6 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
         icon: <ShieldCheck className="w-7 h-7" />,
         title: 'الرقية الشرعية',
         description: 'استشفِ بالقرآن.',
-    },
-    {
-      view: 'consultation',
-      icon: <Scale className="w-7 h-7" />,
-      title: 'الباحث التراثي',
-      description: 'البحث في أمهات الكتب والمصادر.',
     },
     {
       view: 'inspiration',

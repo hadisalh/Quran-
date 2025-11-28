@@ -5,7 +5,6 @@ import { ChatView } from './pages/ChatView';
 import { JournalView } from './pages/JournalView';
 import { InspirationView } from './pages/InspirationView';
 import { RelaxView } from './pages/RelaxView';
-import { ConsultationView } from './pages/ConsultationView';
 import { RuqyahView } from './pages/RuqyahView';
 import { HomeView } from './pages/HomeView';
 import { AdhkarView } from './pages/AdhkarView';
@@ -14,7 +13,7 @@ import type { JournalEntry, GuidanceResponse } from './types';
 import { OnboardingTour } from './components/OnboardingTour';
 import { FirstLaunchModal } from './components/FirstLaunchModal';
 
-export type View = 'home' | 'chat' | 'journal' | 'inspiration' | 'relax' | 'consultation' | 'ruqyah' | 'adhkar' | 'prayers';
+export type View = 'home' | 'chat' | 'journal' | 'inspiration' | 'relax' | 'ruqyah' | 'adhkar' | 'prayers';
 
 const viewLabels: Record<View, string> = {
   home: 'آية ترشدك',
@@ -22,7 +21,6 @@ const viewLabels: Record<View, string> = {
   journal: 'دفتر هدايتي',
   inspiration: 'ركن الإلهام',
   relax: 'واحة السكينة',
-  consultation: 'الباحث التراثي', // Renamed from Islamic Consultation to Heritage Researcher
   ruqyah: 'الرقية الشرعية',
   adhkar: 'أدعية وأذكار',
   prayers: 'أوقات الصلاة'
@@ -130,8 +128,6 @@ const App: React.FC = () => {
         return <InspirationView />;
       case 'relax':
         return <RelaxView />;
-      case 'consultation':
-        return <ConsultationView />;
       case 'ruqyah':
         return <RuqyahView />;
       case 'prayers':

@@ -1,6 +1,6 @@
 import React from 'react';
 import type { View } from '../App';
-import { X, Home, ChatBubble, Sparkles, Moon, Scale, ShieldCheck, ClipboardList, Clock } from './icons';
+import { X, Home, ChatBubble, Sparkles, Moon, ShieldCheck, ClipboardList, Clock } from './icons';
 
 interface SidebarProps {
   isOpen: boolean;
@@ -90,12 +90,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, activeView, o
                 isActive={activeView === 'journal'}
                 onClick={() => onViewChange('journal')}
                 badge={journalEntryCount}
-            />
-             <NavItem 
-                label="الباحث التراثي" 
-                icon={<Scale className="w-6 h-6" />}
-                isActive={activeView === 'consultation'}
-                onClick={() => onViewChange('consultation')}
             />
             <NavItem 
                 label="الرقية الشرعية" 
