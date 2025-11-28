@@ -18,11 +18,11 @@ export type View = 'home' | 'chat' | 'journal' | 'inspiration' | 'relax' | 'cons
 
 const viewLabels: Record<View, string> = {
   home: 'آية ترشدك',
-  chat: 'الباحث القرآني', // Renamed from Guidance Chat
+  chat: 'الباحث القرآني', 
   journal: 'دفتر هدايتي',
   inspiration: 'ركن الإلهام',
   relax: 'واحة السكينة',
-  consultation: 'الباحث الإسلامي', // Renamed from Islamic Consultation
+  consultation: 'الباحث التراثي', // Renamed from Islamic Consultation to Heritage Researcher
   ruqyah: 'الرقية الشرعية',
   adhkar: 'أدعية وأذكار',
   prayers: 'أوقات الصلاة'

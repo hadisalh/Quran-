@@ -92,7 +92,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, activeView, o
                 badge={journalEntryCount}
             />
              <NavItem 
-                label="الباحث الإسلامي" 
+                label="الباحث التراثي" 
                 icon={<Scale className="w-6 h-6" />}
                 isActive={activeView === 'consultation'}
                 onClick={() => onViewChange('consultation')}

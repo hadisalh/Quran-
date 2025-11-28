@@ -16,12 +16,12 @@ interface Message {
 const ConsultationPlaceholder: React.FC = () => (
     <div className="flex flex-col items-center justify-center h-full text-center text-slate-400 p-4">
         <Scale className="w-16 h-16 mb-4 text-slate-500"/>
-        <h2 className="text-2xl font-bold text-slate-200 mb-2">الباحث الإسلامي</h2>
+        <h2 className="text-2xl font-bold text-slate-200 mb-2">الباحث التراثي</h2>
         <p className="max-w-md">
-            هنا يمكنك البحث عن المعلومات في المصادر الإسلامية. سيقوم "الباحث الآلي" باستخراج المعلومات من النصوص الموثوقة دون تقديم فتاوى شخصية.
+            هنا يمكنك البحث عن المعلومات في أمهات الكتب والمصادر التاريخية. سيقوم "الباحث الآلي" باستخراج النصوص من المكتبة التراثية.
         </p>
         <p className="max-w-md w-full mt-4 text-sm bg-slate-800/50 p-3 rounded-lg border border-slate-700">
-            <strong>جرب أن تسأل:</strong> "ما هي مبطلات الوضوء؟"
+            <strong>جرب أن تبحث:</strong> "ماذا قيل في الصبر؟"
         </p>
     </div>
 );

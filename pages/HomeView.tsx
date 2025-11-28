@@ -56,8 +56,8 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
     {
       view: 'consultation',
       icon: <Scale className="w-7 h-7" />,
-      title: 'الباحث الإسلامي',
-      description: 'ابحث في المصادر الشرعية.',
+      title: 'الباحث التراثي',
+      description: 'البحث في أمهات الكتب والمصادر.',
     },
     {
       view: 'inspiration',
