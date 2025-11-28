@@ -1,8 +1,7 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import type { Inspiration } from '../types';
-import { API_KEY } from '../config';
 
-const ai = new GoogleGenAI({ apiKey: API_KEY });
+const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
 const responseSchema = {
   type: Type.OBJECT,

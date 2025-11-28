@@ -1,7 +1,6 @@
 import { GoogleGenAI } from "@google/genai";
-import { API_KEY } from '../config';
 
-const ai = new GoogleGenAI({ apiKey: API_KEY });
+const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
 // Changed from "You are a Faqih" to "You are a helpful assistant" to avoid impersonation filters
 const systemInstruction = `أنت مساعد بحثي إسلامي متخصص في جمع المعلومات من القرآن والسنة.
