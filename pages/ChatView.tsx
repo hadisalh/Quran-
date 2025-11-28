@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { ChatInput } from '../components/ChatInput';
 import { AiMessageBubble } from '../components/AiMessageBubble';
 import { UserMessageBubble } from '../components/UserMessageBubble';
@@ -6,7 +6,7 @@ import { AiTypingBubble } from '../components/AiTypingBubble';
 import { ErrorMessageBubble } from '../components/ErrorMessageBubble';
 import { getGuidance } from '../services/geminiService';
 import type { GuidanceResponse } from '../types';
-import { ChatBubble } from '../components/icons';
+import { ChatBubble, Sparkles } from '../components/icons';
 
 interface UserMessage {
   type: 'user';
@@ -27,15 +27,23 @@ interface ChatViewProps {
 }
 
 const ChatPlaceholder: React.FC = () => (
-    <div className="flex flex-col items-center justify-center h-full text-center text-slate-500 dark:text-slate-400 p-4">
-        <ChatBubble className="w-16 h-16 mb-4 text-slate-300 dark:text-slate-500"/>
-        <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-200 mb-2">مرحباً بك في الباحث القرآني</h2>
-        <p className="max-w-md">
-            اكتب ما تشعر به أو الموضوع الذي يشغل بالك، وسيقوم "المساعد الذكي" بالبحث في القرآن الكريم عن الآيات التي تصف هذا الشعور والآيات التي تقدم التوجيه والسكينة.
+    <div className="flex flex-col items-center justify-center h-full text-center p-6 animate-fade-in">
+        <div className="w-24 h-24 bg-amber-100 dark:bg-slate-800 rounded-full flex items-center justify-center mb-6 shadow-inner relative overflow-hidden">
+             <div className="absolute inset-0 bg-gradient-to-tr from-amber-200/20 to-transparent"></div>
+            <Sparkles className="w-12 h-12 text-amber-500 dark:text-amber-400 animate-pulse"/>
+        </div>
+        <h2 className="text-3xl font-bold text-slate-800 dark:text-slate-100 mb-3 font-serif">الباحث القرآني الذكي</h2>
+        <p className="max-w-lg text-slate-600 dark:text-slate-300 text-lg leading-relaxed mb-8">
+            أنا هنا لأستمع إليك بقلب مفتوح. أخبرني بما يثقل صدرك أو ما تبحث عنه، وسأبحث لك في كتاب الله عما يطمئن قلبك وينير دربك.
         </p>
-        <p className="max-w-md w-full mt-4 text-sm bg-slate-100 dark:bg-slate-800/50 p-3 rounded-lg border border-slate-200 dark:border-slate-700">
-            <strong>جرب أن تكتب:</strong> "أشعر بالضيق ولا أعرف السبب"
-        </p>
+        
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full max-w-2xl">
+            {["أشعر بضيق ولا أعرف السبب", "خائف من المستقبل والرزق", "ظلمني شخص قريب مني", "كيف أزيد من خشوعي؟"].map((suggestion, idx) => (
+                <div key={idx} className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-3 rounded-xl text-sm text-slate-500 dark:text-slate-400 text-center shadow-sm select-none opacity-80">
+                    "{suggestion}"
+                </div>
+            ))}
+        </div>
     </div>
 );
 
@@ -74,9 +82,9 @@ export const ChatView: React.FC<ChatViewProps> = ({ addToJournal }) => {
   };
 
   return (
-    <div className="flex flex-col h-full">
-        <main className="flex-grow flex flex-col overflow-hidden">
-            <div className="flex-grow flex flex-col space-y-6 overflow-y-auto p-4">
+    <div className="flex flex-col h-full bg-slate-50 dark:bg-slate-900">
+        <main className="flex-grow flex flex-col overflow-hidden relative">
+            <div className="flex-grow flex flex-col space-y-8 overflow-y-auto p-4 sm:p-6 scroll-smooth">
                 {messages.length === 0 && !isLoading && !error ? (
                     <ChatPlaceholder />
                 ) : (
@@ -106,10 +114,10 @@ export const ChatView: React.FC<ChatViewProps> = ({ addToJournal }) => {
                 {isLoading && <AiTypingBubble />}
                 {error && <ErrorMessageBubble message={error} />}
                 
-                <div ref={messagesEndRef} />
+                <div ref={messagesEndRef} className="h-4" />
             </div>
           
-            <div className="p-4 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-700/50">
+            <div className="p-4 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-t border-slate-200 dark:border-slate-700/50 shadow-lg z-10">
                 <ChatInput onSubmit={handleSubmit} isLoading={isLoading} />
             </div>
         </main>
