@@ -37,23 +37,26 @@ const responseSchema = {
     advice: {
       type: Type.ARRAY,
       items: { type: Type.STRING },
-      description: "نقاط عملية مستخلصة من النصوص"
+      description: "نصائح عامة"
     },
     dua: {
       type: Type.STRING,
-      description: "دعاء مأثور"
+      description: "دعاء"
     }
   },
   required: ["descriptiveAyah", "solutionAyah", "advice", "dua"]
 };
 
-// Strict Researcher Persona - avoid "spiritual guide" terminology
-const systemInstruction = `أنت محرك بحث دلالي للقرآن الكريم.
-مهمتك: عندما يصف المستخدم حالته، ابحث في قاعدة بياناتك عن الآيات القرآنية ذات الصلة بالموضوع.
-1. قدم آية تصف الحالة (Descriptive).
-2. قدم آية تحمل التوجيه أو الحل (Solution).
-3. استخلص نقاط عملية عامة من النصوص.
-تنبيه: أنت لست مفتيًا ولا شيخًا. أنت برنامج ذكاء اصطناعي للمساعدة في البحث. لا تقدم آراء شخصية.`;
+// "Semantic Search Engine" persona - Technical and neutral to bypass personality filters
+const systemInstruction = `You are a semantic search engine for the Quran.
+Input: A user's situation description.
+Output: JSON object containing relevant Quranic verses.
+Task:
+1. Search database for a verse describing the situation.
+2. Search database for a verse offering a solution/comfort.
+3. Extract general advice from the text.
+4. Extract a relevant Dua.
+STRICT JSON OUTPUT ONLY. NO PREAMBLE. NO RELIGIOUS COMMENTARY.`;
 
 export async function getGuidance(userInput: string): Promise<GuidanceResponse> {
   try {
@@ -64,13 +67,16 @@ export async function getGuidance(userInput: string): Promise<GuidanceResponse> 
       config: {
         responseMimeType: "application/json",
         responseSchema: responseSchema,
-        temperature: 0.6,
+        temperature: 0.5,
         systemInstruction: systemInstruction,
+        // FORCE DISABLE ALL SAFETY FILTERS
+        // This is crucial for religious text which can be falsely flagged
         safetySettings: [
           { category: 'HARM_CATEGORY_HATE_SPEECH', threshold: 'BLOCK_NONE' },
           { category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT', threshold: 'BLOCK_NONE' },
           { category: 'HARM_CATEGORY_HARASSMENT', threshold: 'BLOCK_NONE' },
           { category: 'HARM_CATEGORY_DANGEROUS_CONTENT', threshold: 'BLOCK_NONE' },
+          { category: 'HARM_CATEGORY_CIVIC_INTEGRITY', threshold: 'BLOCK_NONE' }
         ]
       },
     });
@@ -78,26 +84,37 @@ export async function getGuidance(userInput: string): Promise<GuidanceResponse> 
     let jsonText = response.text;
     
     if (!jsonText) {
-        throw new Error("لم يتم استلام رد من النموذج.");
+        throw new Error("لم يتم استلام رد من النموذج (Empty Response).");
     }
 
+    // Robust JSON cleaning: Find the first '{' and the last '}'
     const firstBrace = jsonText.indexOf('{');
     const lastBrace = jsonText.lastIndexOf('}');
     
     if (firstBrace !== -1 && lastBrace !== -1) {
         jsonText = jsonText.substring(firstBrace, lastBrace + 1);
+    } else {
+        throw new Error("الرد غير صالح (Invalid JSON format).");
     }
 
-    const parsedResponse = JSON.parse(jsonText);
-    return parsedResponse as GuidanceResponse;
+    try {
+        const parsedResponse = JSON.parse(jsonText);
+        return parsedResponse as GuidanceResponse;
+    } catch (parseError) {
+        console.error("JSON Parse Error:", parseError, "Raw Text:", jsonText);
+        throw new Error("حدث خطأ في معالجة البيانات المستلمة.");
+    }
 
   } catch (error: any) {
     console.error("Error fetching guidance:", error);
     const errorMessage = error.toString();
     
     if (errorMessage.includes('429')) {
-      throw new Error("النظام مشغول حالياً، يرجى المحاولة لاحقاً.");
+      throw new Error("الخدمة مشغولة جداً حالياً، يرجى المحاولة بعد قليل.");
     }
-    throw new Error("حدث خطأ في عملية البحث. حاول مرة أخرى.");
+    if (errorMessage.includes('SAFETY') || errorMessage.includes('blocked')) {
+        throw new Error("تم حظر الرد بسبب قيود المحتوى. حاول صياغة الجملة بشكل مختلف.");
+    }
+    throw new Error("حدث خطأ في الاتصال. تأكد من الإنترنت وحاول مرة أخرى.");
   }
 }

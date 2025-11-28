@@ -16,8 +16,7 @@ const responseSchema = {
   required: ["ayahText", "surahName", "surahNumber", "ayahNumber", "reflection"]
 };
 
-// Simple instruction to avoid complexity filters
-const systemInstruction = `اختر آية قرآنية تبعث على الأمل والسكينة.`;
+const systemInstruction = `Retrieve a Quranic verse about hope, patience, or mercy. Return JSON only.`;
 
 export async function getInspiration(history: string[] = []): Promise<Inspiration> {
   try {
@@ -33,13 +32,15 @@ export async function getInspiration(history: string[] = []): Promise<Inspiratio
       config: {
         responseMimeType: "application/json",
         responseSchema: responseSchema,
-        temperature: 1.1, // Higher creativity for variety
+        temperature: 1.0,
         systemInstruction: systemInstruction,
+        // FORCE DISABLE ALL SAFETY FILTERS
         safetySettings: [
           { category: 'HARM_CATEGORY_HATE_SPEECH', threshold: 'BLOCK_NONE' },
           { category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT', threshold: 'BLOCK_NONE' },
           { category: 'HARM_CATEGORY_HARASSMENT', threshold: 'BLOCK_NONE' },
           { category: 'HARM_CATEGORY_DANGEROUS_CONTENT', threshold: 'BLOCK_NONE' },
+          { category: 'HARM_CATEGORY_CIVIC_INTEGRITY', threshold: 'BLOCK_NONE' }
         ]
       },
     });
