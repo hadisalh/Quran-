@@ -7,22 +7,23 @@ const ai = new GoogleGenAI({ apiKey: apiKey || "DUMMY_KEY" });
 const responseSchema = {
   type: Type.OBJECT,
   properties: {
-    ayahText: { type: Type.STRING, description: "نص الآية القرآنية بالرسم العثماني." },
-    surahName: { type: Type.STRING, description: "اسم السورة باللغة العربية." },
-    surahNumber: { type: Type.INTEGER, description: "رقم السورة." },
-    ayahNumber: { type: Type.INTEGER, description: "رقم الآية." },
-    reflection: { type: Type.STRING, description: "تأمل قصير وعميق (جملة أو جملتين) حول الآية." }
+    ayahText: { type: Type.STRING, description: "نص الآية" },
+    surahName: { type: Type.STRING, description: "اسم السورة" },
+    surahNumber: { type: Type.INTEGER, description: "رقم السورة" },
+    ayahNumber: { type: Type.INTEGER, description: "رقم الآية" },
+    reflection: { type: Type.STRING, description: "تأمل قصير" }
   },
   required: ["ayahText", "surahName", "surahNumber", "ayahNumber", "reflection"]
 };
 
-const systemInstruction = `أنت مصدر إلهام رباني. اختر آية قرآنية تبعث على الأمل والطمأنينة.`;
+// Simple instruction to avoid complexity filters
+const systemInstruction = `اختر آية قرآنية تبعث على الأمل والسكينة.`;
 
 export async function getInspiration(history: string[] = []): Promise<Inspiration> {
   try {
-    let prompt = `أعطني آية قرآنية ملهمة.`;
+    let prompt = `أعطني آية قرآنية عشوائية عن الرحمة أو الصبر أو الفرج.`;
     if (history.length > 0) {
-        prompt += `\n\nتجنب هذه الآيات: ${history.join(', ')}`;
+        prompt += ` تجنب هذه الآيات: ${history.join(', ')}`;
     }
     
     console.log("Requesting inspiration with model: gemini-2.5-flash");
@@ -32,9 +33,8 @@ export async function getInspiration(history: string[] = []): Promise<Inspiratio
       config: {
         responseMimeType: "application/json",
         responseSchema: responseSchema,
-        temperature: 1.0, 
+        temperature: 1.1, // Higher creativity for variety
         systemInstruction: systemInstruction,
-        seed: Math.floor(Math.random() * 1000000),
         safetySettings: [
           { category: 'HARM_CATEGORY_HATE_SPEECH', threshold: 'BLOCK_NONE' },
           { category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT', threshold: 'BLOCK_NONE' },
@@ -47,7 +47,6 @@ export async function getInspiration(history: string[] = []): Promise<Inspiratio
     let jsonText = response.text;
     if (!jsonText) throw new Error("Empty response");
 
-    // Clean JSON
     const firstBrace = jsonText.indexOf('{');
     const lastBrace = jsonText.lastIndexOf('}');
     if (firstBrace !== -1 && lastBrace !== -1) {
@@ -57,10 +56,6 @@ export async function getInspiration(history: string[] = []): Promise<Inspiratio
     return JSON.parse(jsonText) as Inspiration;
   } catch (error: any) {
     console.error("Error fetching inspiration:", error);
-    const errorMessage = error.toString();
-    if (errorMessage.includes('404') || errorMessage.includes('NOT_FOUND')) {
-        throw new Error("عذراً، خدمة الإلهام غير متاحة حالياً.");
-    }
     throw new Error("فشل في الحصول على إلهام جديد.");
   }
 }
