@@ -56,8 +56,8 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
     {
       view: 'consultation',
       icon: <Scale className="w-7 h-7" />,
-      title: 'الاستشارة',
-      description: 'اسأل "فقيه" عن دينك.',
+      title: 'الباحث الإسلامي',
+      description: 'ابحث في المصادر الشرعية.',
     },
     {
       view: 'inspiration',
@@ -112,10 +112,10 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
                     <ChatBubble className="w-12 h-12 sm:w-14 sm:h-14" />
                   </div>
                   <div className="text-center md:text-right flex-grow relative z-10">
-                    <h2 className="text-3xl font-bold text-slate-800 dark:text-slate-100 mb-3 font-serif group-hover:text-amber-600 dark:group-hover:text-amber-100 transition-colors">الدردشة الإرشادية</h2>
-                    <p className="text-slate-600 dark:text-slate-300 text-lg leading-relaxed">هل تشعر بالضيق أو الحزن؟ تحدث مع مرشدك الروحي "هادي" ليطمئن قلبك بآيات القرآن الكريم.</p>
+                    <h2 className="text-3xl font-bold text-slate-800 dark:text-slate-100 mb-3 font-serif group-hover:text-amber-600 dark:group-hover:text-amber-100 transition-colors">الباحث القرآني</h2>
+                    <p className="text-slate-600 dark:text-slate-300 text-lg leading-relaxed">ابحث عن الآيات التي تلامس قلبك وتصف حالتك. المساعد الذكي سيقوم بالبحث في القرآن الكريم ليقدم لك الآيات المناسبة.</p>
                     <div className="mt-5 inline-flex items-center text-amber-600 dark:text-amber-400 font-bold text-sm bg-white/80 dark:bg-slate-900/50 px-4 py-2 rounded-full border border-amber-500/20 group-hover:bg-amber-500 group-hover:text-white dark:group-hover:text-slate-900 transition-all">
-                        <span>ابدأ المحادثة الآن</span>
+                        <span>ابدأ البحث الآن</span>
                         <span className="mr-2 transition-transform group-hover:-translate-x-1">←</span>
                     </div>
                   </div>

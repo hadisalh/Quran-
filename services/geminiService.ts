@@ -37,22 +37,23 @@ const responseSchema = {
     advice: {
       type: Type.ARRAY,
       items: { type: Type.STRING },
-      description: "نصائح عملية"
+      description: "نقاط عملية مستخلصة من النصوص"
     },
     dua: {
       type: Type.STRING,
-      description: "دعاء مناسب"
+      description: "دعاء مأثور"
     }
   },
   required: ["descriptiveAyah", "solutionAyah", "advice", "dua"]
 };
 
-// تم تعديل التعليمات لتجنب "انتحال الشخصية الدينية" ولتعمل كباحث مساعد
-// Changed instruction to avoid "Impersonation" filters. Now acts as a research assistant.
-const systemInstruction = `دورك هو مساعد بحثي لاستخراج الآيات القرآنية والنصائح العامة.
-المستخدم سيعطيك مشكلة، ومهمتك هي البحث في النصوص القرآنية عن آيات تواسيه وآيات ترشده للحل.
-يجب أن يكون الرد بصيغة JSON فقط.
-لا تقم بتقمص شخصية شيخ أو مفتي، بل قدم المعلومات كمرجع.`;
+// Strict Researcher Persona - avoid "spiritual guide" terminology
+const systemInstruction = `أنت محرك بحث دلالي للقرآن الكريم.
+مهمتك: عندما يصف المستخدم حالته، ابحث في قاعدة بياناتك عن الآيات القرآنية ذات الصلة بالموضوع.
+1. قدم آية تصف الحالة (Descriptive).
+2. قدم آية تحمل التوجيه أو الحل (Solution).
+3. استخلص نقاط عملية عامة من النصوص.
+تنبيه: أنت لست مفتيًا ولا شيخًا. أنت برنامج ذكاء اصطناعي للمساعدة في البحث. لا تقدم آراء شخصية.`;
 
 export async function getGuidance(userInput: string): Promise<GuidanceResponse> {
   try {
@@ -63,9 +64,8 @@ export async function getGuidance(userInput: string): Promise<GuidanceResponse> 
       config: {
         responseMimeType: "application/json",
         responseSchema: responseSchema,
-        temperature: 0.7,
+        temperature: 0.6,
         systemInstruction: systemInstruction,
-        // Disable all safety filters to prevent false positives on religious text
         safetySettings: [
           { category: 'HARM_CATEGORY_HATE_SPEECH', threshold: 'BLOCK_NONE' },
           { category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT', threshold: 'BLOCK_NONE' },
@@ -78,10 +78,9 @@ export async function getGuidance(userInput: string): Promise<GuidanceResponse> 
     let jsonText = response.text;
     
     if (!jsonText) {
-        throw new Error("لم يتم استلام رد من النموذج (Empty Response).");
+        throw new Error("لم يتم استلام رد من النموذج.");
     }
 
-    // تنظيف الرد للتأكد من أنه JSON صالح
     const firstBrace = jsonText.indexOf('{');
     const lastBrace = jsonText.lastIndexOf('}');
     
@@ -97,11 +96,8 @@ export async function getGuidance(userInput: string): Promise<GuidanceResponse> 
     const errorMessage = error.toString();
     
     if (errorMessage.includes('429')) {
-      throw new Error("الخدمة مشغولة. يرجى الانتظار قليلاً.");
+      throw new Error("النظام مشغول حالياً، يرجى المحاولة لاحقاً.");
     }
-    if (errorMessage.includes('404')) {
-        throw new Error("الموديل غير متاح حالياً.");
-    }
-    throw new Error("حدث خطأ في الاتصال. حاول مرة أخرى.");
+    throw new Error("حدث خطأ في عملية البحث. حاول مرة أخرى.");
   }
 }

@@ -3,12 +3,14 @@ import { GoogleGenAI } from "@google/genai";
 const apiKey = process.env.API_KEY;
 const ai = new GoogleGenAI({ apiKey: apiKey || "DUMMY_KEY" });
 
-// تم تعديل التعليمات لتكون "باحث شرعي" بدلاً من "مفتي" لتجاوز الفلاتر
-// Changed prompt to "Research Assistant" to bypass impersonation filters.
-const systemInstruction = `أنت مساعد بحثي متخصص في جمع المعلومات من المصادر الإسلامية الموثوقة.
-مهمتك: تقديم معلومات من القرآن والسنة وأقوال العلماء للإجابة على استفسار المستخدم.
-تنبيه هام: لا تصدر فتاوى خاصة بك، ولا تتحدث بصيغة السلطة الدينية (مثل "حلال" أو "حرام" من تلقاء نفسك).
-انقل فقط ما قاله العلماء بأسلوب مهذب وموضوعي. ابدأ بـ "بسم الله الرحمن الرحيم".`;
+// Strict Research Assistant Persona
+const systemInstruction = `أنت مساعد بحثي إسلامي (Islamic Research Assistant).
+مهمتك: البحث في النصوص الإسلامية (القرآن، السنة، أقوال العلماء) عن المعلومات التي يطلبها المستخدم.
+القواعد الصارمة:
+1. لا تصدر أحكاماً شرعية (حلال/حرام) من تلقاء نفسك.
+2. انقل المعلومات بصيغة "ورد في المصادر..." أو "قال العلماء...".
+3. إذا كان السؤال يتطلب فتوى خاصة، انصح المستخدم بالرجوع إلى أهل الاختصاص.
+4. أسلوبك موضوعي، علمي، ومحايد.`;
 
 export async function getConsultation(userInput: string): Promise<string> {
   try {
@@ -17,9 +19,8 @@ export async function getConsultation(userInput: string): Promise<string> {
       model: "gemini-2.5-flash",
       contents: userInput,
       config: {
-        temperature: 0.5,
+        temperature: 0.4, // Lower temperature for more factual responses
         systemInstruction: systemInstruction,
-        // Disable safety filters to allow religious text processing
         safetySettings: [
           { category: 'HARM_CATEGORY_HATE_SPEECH', threshold: 'BLOCK_NONE' },
           { category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT', threshold: 'BLOCK_NONE' },
@@ -42,10 +43,9 @@ export async function getConsultation(userInput: string): Promise<string> {
     if (errorMessage.includes('429')) {
       throw new Error("الخدمة مشغولة حالياً.");
     }
-    // رسالة خطأ أوضح للمستخدم في حال تم الحظر
     if (errorMessage.includes('SAFETY') || errorMessage.includes('blocked')) {
-       return "عذراً، لم أتمكن من الإجابة. حاول صياغة السؤال بطريقة بحثية (مثلاً: 'ماذا قال العلماء عن...') بدلاً من طلب فتوى مباشرة.";
+       return "عذراً، لا يمكنني الإجابة على هذا السؤال لأنه قد يتطلب فتوى مباشرة، وأنا مجرد باحث آلي.";
     }
-    return "عذراً، حدث خطأ في الاتصال بالخدمة.";
+    return "عذراً، حدث خطأ في استرجاع المعلومات.";
   }
 }

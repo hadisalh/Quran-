@@ -53,7 +53,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, activeView, o
         }`}
       >
         <div className="flex justify-between items-center mb-8 px-2">
-          <h2 className="text-2xl font-bold text-amber-600 dark:text-amber-400 font-serif">هادي</h2>
+          <h2 className="text-2xl font-bold text-amber-600 dark:text-amber-400 font-serif">آية ترشدك</h2>
           <button onClick={onClose} className="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700 md:hidden transition-colors">
             <X className="w-6 h-6 text-slate-500 dark:text-slate-400" />
           </button>
@@ -67,7 +67,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, activeView, o
                 onClick={() => onViewChange('home')}
             />
             <NavItem 
-                label="الدردشة الإرشادية" 
+                label="الباحث القرآني" 
                 icon={<ChatBubble className="w-6 h-6" />}
                 isActive={activeView === 'chat'}
                 onClick={() => onViewChange('chat')}
@@ -92,7 +92,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, activeView, o
                 badge={journalEntryCount}
             />
              <NavItem 
-                label="الاستشارة الإسلامية" 
+                label="الباحث الإسلامي" 
                 icon={<Scale className="w-6 h-6" />}
                 isActive={activeView === 'consultation'}
                 onClick={() => onViewChange('consultation')}

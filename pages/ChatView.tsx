@@ -29,9 +29,9 @@ interface ChatViewProps {
 const ChatPlaceholder: React.FC = () => (
     <div className="flex flex-col items-center justify-center h-full text-center text-slate-500 dark:text-slate-400 p-4">
         <ChatBubble className="w-16 h-16 mb-4 text-slate-300 dark:text-slate-500"/>
-        <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-200 mb-2">مرحباً بك في الدردشة الإرشادية</h2>
+        <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-200 mb-2">مرحباً بك في الباحث القرآني</h2>
         <p className="max-w-md">
-            هنا يمكنك التحدث مع مرشدك الروحي "هادي". شاركه ما تشعر به، سواء كان حزنًا، قلقًا، أو أي شعور آخر، وسيرشدك إلى آيات قرآنية تصف حالتك وتقدم لك العزاء والحل.
+            اكتب ما تشعر به أو الموضوع الذي يشغل بالك، وسيقوم "المساعد الذكي" بالبحث في القرآن الكريم عن الآيات التي تصف هذا الشعور والآيات التي تقدم التوجيه والسكينة.
         </p>
         <p className="max-w-md w-full mt-4 text-sm bg-slate-100 dark:bg-slate-800/50 p-3 rounded-lg border border-slate-200 dark:border-slate-700">
             <strong>جرب أن تكتب:</strong> "أشعر بالضيق ولا أعرف السبب"
@@ -67,7 +67,7 @@ export const ChatView: React.FC<ChatViewProps> = ({ addToJournal }) => {
       setMessages(prev => [...prev, aiMessage]);
     } catch (err: any) {
       console.error(err);
-      setError(err.message || 'عذرًا، حدث خطأ أثناء طلب الإرشاد. يرجى المحاولة مرة أخرى.');
+      setError(err.message || 'عذرًا، حدث خطأ أثناء البحث. يرجى المحاولة مرة أخرى.');
     } finally {
       setIsLoading(false);
     }

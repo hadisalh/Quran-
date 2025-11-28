@@ -37,7 +37,7 @@ export const AiMessageBubble: React.FC<AiMessageBubbleProps> = ({ guidance, prob
       </div>
 
       <div className="bg-white dark:bg-slate-800 rounded-xl rounded-bl-none p-4 w-full max-w-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
-        <p className="font-bold text-slate-500 dark:text-slate-300 mb-4">هادي</p>
+        <p className="font-bold text-slate-500 dark:text-slate-300 mb-4">المساعد الذكي</p>
         <div className="space-y-2">
           <Section title="آية تصف حالتك" icon={<ClipboardList className="w-5 h-5 text-amber-500 dark:text-amber-400"/>}>
             <AyahCard ayah={guidance.descriptiveAyah} />

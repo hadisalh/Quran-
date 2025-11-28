@@ -16,12 +16,12 @@ interface Message {
 const ConsultationPlaceholder: React.FC = () => (
     <div className="flex flex-col items-center justify-center h-full text-center text-slate-400 p-4">
         <Scale className="w-16 h-16 mb-4 text-slate-500"/>
-        <h2 className="text-2xl font-bold text-slate-200 mb-2">الاستشارة الإسلامية</h2>
+        <h2 className="text-2xl font-bold text-slate-200 mb-2">الباحث الإسلامي</h2>
         <p className="max-w-md">
-            هنا يمكنك طرح أسئلتك الدينية والفقهية على "فقيه"، المستشار الإسلامي الذكي. سيقدم لك إجابات مبنية على القرآن والسنة.
+            هنا يمكنك البحث عن المعلومات في المصادر الإسلامية. سيقوم "الباحث الآلي" باستخراج المعلومات من النصوص الموثوقة دون تقديم فتاوى شخصية.
         </p>
         <p className="max-w-md w-full mt-4 text-sm bg-slate-800/50 p-3 rounded-lg border border-slate-700">
-            <strong>جرب أن تسأل:</strong> "ما هي شروط صحة الوضوء؟"
+            <strong>جرب أن تسأل:</strong> "ما هي مبطلات الوضوء؟"
         </p>
     </div>
 );
@@ -55,10 +55,9 @@ export const ConsultationView: React.FC = () => {
           id: new Date().toISOString() + '-ai' 
       };
       setMessages(prev => [...prev, aiMessage]);
-      
     } catch (err: any) {
       console.error(err);
-      setError(err.message || 'عذرًا، حدث خطأ أثناء طلب الاستشارة. يرجى المحاولة مرة أخرى.');
+      setError(err.message || 'حدث خطأ في الاتصال بالخدمة.');
     } finally {
       setIsLoading(false);
     }
@@ -86,7 +85,7 @@ export const ConsultationView: React.FC = () => {
                 <div ref={messagesEndRef} />
             </div>
           
-            <div className="p-4 bg-slate-900 border-t border-slate-700/50">
+            <div className="p-4 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-700/50">
                 <ChatInput onSubmit={handleSubmit} isLoading={isLoading} />
             </div>
         </main>

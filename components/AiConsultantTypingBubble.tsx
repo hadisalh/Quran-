@@ -8,7 +8,7 @@ export const AiConsultantTypingBubble: React.FC = () => {
         <Scale className="w-6 h-6 text-amber-300" />
       </div>
       <div className="bg-slate-800 rounded-xl rounded-bl-none p-4 max-w-xs">
-        <div className="flex items-center justify-center space-x-1.5" aria-label="فقيه يكتب الآن">
+        <div className="flex items-center justify-center space-x-1.5" aria-label="الباحث يكتب الآن">
             <span className="w-2 h-2 bg-slate-500 rounded-full animate-pulse [animation-delay:-0.3s]"></span>
             <span className="w-2 h-2 bg-slate-500 rounded-full animate-pulse [animation-delay:-0.15s]"></span>
             <span className="w-2 h-2 bg-slate-500 rounded-full animate-pulse"></span>
