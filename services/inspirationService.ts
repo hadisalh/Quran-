@@ -1,4 +1,3 @@
-
 import { GoogleGenAI, Type } from "@google/genai";
 import type { Inspiration } from '../types';
 import { API_KEY } from '../config';
@@ -26,9 +25,9 @@ export async function getInspiration(history: string[] = []): Promise<Inspiratio
         prompt += `\n\nتجنب هذه الآيات: ${history.join(', ')}`;
     }
     
-    console.log("Requesting inspiration with model: gemini-1.5-flash");
+    console.log("Requesting inspiration with model: gemini-2.5-flash");
     const response = await ai.models.generateContent({
-      model: "gemini-1.5-flash",
+      model: "gemini-2.5-flash",
       contents: prompt,
       config: {
         responseMimeType: "application/json",
