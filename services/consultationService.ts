@@ -1,6 +1,7 @@
 import { GoogleGenAI } from "@google/genai";
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+const apiKey = process.env.API_KEY;
+const ai = new GoogleGenAI({ apiKey: apiKey || "DUMMY_KEY" });
 
 // Changed from "You are a Faqih" to "You are a helpful assistant" to avoid impersonation filters
 const systemInstruction = `أنت مساعد بحثي إسلامي متخصص في جمع المعلومات من القرآن والسنة.
@@ -11,9 +12,9 @@ const systemInstruction = `أنت مساعد بحثي إسلامي متخصص ف
 
 export async function getConsultation(userInput: string): Promise<string> {
   try {
-    console.log("Requesting consultation with model: gemini-1.5-flash");
+    console.log("Requesting consultation with model: gemini-2.5-flash");
     const response = await ai.models.generateContent({
-      model: "gemini-1.5-flash",
+      model: "gemini-2.5-flash",
       contents: userInput,
       config: {
         temperature: 0.5,
@@ -45,7 +46,7 @@ export async function getConsultation(userInput: string): Promise<string> {
        return "عذراً، لم أتمكن من الإجابة على هذا السؤال المحدد بسبب قيود المحتوى. يرجى صياغة السؤال بطريقة مختلفة.";
     }
     if (errorMessage.includes('404') || errorMessage.includes('NOT_FOUND')) {
-        throw new Error("نعتذر، خدمة الاستشارة غير متاحة حالياً. يرجى المحاولة لاحقاً.");
+        throw new Error("نعتذر، خدمة الاستشارة غير متاحة حالياً. يرجى التأكد من إعدادات المفتاح.");
     }
     throw new Error("فشل في الحصول على الإجابة. تأكد من اتصالك بالإنترنت وحاول مرة أخرى.");
   }

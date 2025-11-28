@@ -1,7 +1,8 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import type { Inspiration } from '../types';
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+const apiKey = process.env.API_KEY;
+const ai = new GoogleGenAI({ apiKey: apiKey || "DUMMY_KEY" });
 
 const responseSchema = {
   type: Type.OBJECT,
@@ -24,9 +25,9 @@ export async function getInspiration(history: string[] = []): Promise<Inspiratio
         prompt += `\n\nتجنب هذه الآيات: ${history.join(', ')}`;
     }
     
-    console.log("Requesting inspiration with model: gemini-1.5-flash");
+    console.log("Requesting inspiration with model: gemini-2.5-flash");
     const response = await ai.models.generateContent({
-      model: "gemini-1.5-flash",
+      model: "gemini-2.5-flash",
       contents: prompt,
       config: {
         responseMimeType: "application/json",

@@ -1,7 +1,13 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import type { GuidanceResponse } from '../types';
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+// Access API Key safely
+const apiKey = process.env.API_KEY;
+if (!apiKey) {
+  console.warn("API Key is missing! AI features will not work.");
+}
+
+const ai = new GoogleGenAI({ apiKey: apiKey || "DUMMY_KEY" });
 
 const responseSchema = {
   type: Type.OBJECT,
@@ -48,9 +54,9 @@ const systemInstruction = `أنت مساعد إسلامي حكيم. هدفك م�
 
 export async function getGuidance(userInput: string): Promise<GuidanceResponse> {
   try {
-    console.log("Requesting guidance with model: gemini-1.5-flash");
+    console.log("Requesting guidance with model: gemini-2.5-flash");
     const response = await ai.models.generateContent({
-      model: "gemini-1.5-flash",
+      model: "gemini-2.5-flash",
       contents: userInput,
       config: {
         responseMimeType: "application/json",
@@ -97,7 +103,7 @@ export async function getGuidance(userInput: string): Promise<GuidanceResponse> 
       throw new Error("الخدمة مشغولة حاليًا. يرجى الانتظار لحظة والمحاولة مجدداً.");
     }
     if (errorMessage.includes('404') || errorMessage.includes('NOT_FOUND')) {
-        throw new Error("نعتذر، الموديل غير متاح في منطقتك أو للمفتاح الحالي. يرجى المحاولة لاحقاً.");
+        throw new Error("نعتذر، الموديل غير متاح حالياً. يرجى التأكد من مفتاح API.");
     }
     throw new Error("حدث خطأ أثناء الاتصال بالمرشد الذكي. يرجى المحاولة مرة أخرى.");
   }
