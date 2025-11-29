@@ -188,11 +188,12 @@ export const PrayerTimesView: React.FC = () => {
 
   const toggleAdhan = () => {
     if (!audioRef.current) {
-      // Use a reliable MP3 source. Makkah Adhan.
-      audioRef.current = new Audio('https://download.tvquran.com/download/Adhan/Athan_Makkah.mp3');
+      // Use a very reliable static source for Adhan audio
+      audioRef.current = new Audio('https://www.islamcan.com/audio/adhan/azan1.mp3');
       audioRef.current.onended = () => setIsPlayingAdhan(false);
       audioRef.current.onerror = (e) => {
-        console.error("Failed to load adhan audio", e);
+        const target = e.target as HTMLAudioElement;
+        console.error("Failed to load adhan audio", target.error);
         setIsPlayingAdhan(false);
         audioRef.current = null;
         alert("عذراً، تعذر تحميل ملف الصوت. يرجى المحاولة لاحقاً.");
