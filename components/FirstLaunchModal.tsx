@@ -1,32 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { Sparkles, HeartHandshake } from './icons';
 
-// Changed key to v2 to ensure it shows again for existing users
-const FIRST_LAUNCH_KEY = 'ayah-guidance-credit-hadi-v2';
-
 export const FirstLaunchModal: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    try {
-      const hasBeenShown = localStorage.getItem(FIRST_LAUNCH_KEY);
-      if (!hasBeenShown) {
-        // Small delay for animation smoothness
-        setTimeout(() => setIsVisible(true), 500);
-      }
-    } catch (e) {
-      console.error("Failed to access localStorage", e);
-      setIsVisible(true);
-    }
+    // Show the modal every time the component mounts (app start or refresh)
+    const timer = setTimeout(() => setIsVisible(true), 500);
+    return () => clearTimeout(timer);
   }, []);
 
   const handleClose = () => {
     setIsVisible(false);
-    try {
-      localStorage.setItem(FIRST_LAUNCH_KEY, 'true');
-    } catch (e) {
-      console.error("Failed to set item in localStorage", e);
-    }
   };
 
   if (!isVisible) {
@@ -37,7 +22,7 @@ export const FirstLaunchModal: React.FC = () => {
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
       {/* Backdrop with blur */}
       <div 
-        className="absolute inset-0 bg-slate-900/80 backdrop-blur-sm transition-opacity duration-500 animate-fade-in"
+        className="absolute inset-0 bg-slate-900/80 backdrop-blur-md transition-opacity duration-500 animate-fade-in"
         onClick={handleClose}
       ></div>
 
@@ -45,7 +30,7 @@ export const FirstLaunchModal: React.FC = () => {
       <div className="relative bg-slate-900 w-full max-w-md rounded-3xl p-1 shadow-2xl animate-[fadeIn_0.7s_ease-out_forwards] transform overflow-hidden">
         
         {/* Animated Gradient Border effect */}
-        <div className="absolute inset-0 bg-gradient-to-br from-amber-300 via-amber-500 to-amber-700 opacity-20 animate-pulse"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-amber-300 via-amber-500 to-amber-700 opacity-30 animate-pulse"></div>
         
         <div className="relative bg-slate-900 rounded-[22px] p-8 text-center border border-amber-500/20 overflow-hidden">
             
@@ -76,7 +61,7 @@ export const FirstLaunchModal: React.FC = () => {
                     onClick={handleClose}
                     className="w-full py-3.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-900 font-bold rounded-xl shadow-lg shadow-amber-500/20 transition-all transform hover:scale-[1.02] active:scale-95"
                 >
-                    ابدأ الرحلة
+                    الدخول للتطبيق
                 </button>
             </div>
         </div>
