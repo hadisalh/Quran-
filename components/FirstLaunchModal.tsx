@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { Sparkles, HeartHandshake } from './icons';
 
-const FIRST_LAUNCH_KEY = 'ayah-guidance-first-launch-shown';
+// Changed key to v2 to ensure it shows again for existing users
+const FIRST_LAUNCH_KEY = 'ayah-guidance-credit-hadi-v2';
 
 export const FirstLaunchModal: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -9,11 +11,11 @@ export const FirstLaunchModal: React.FC = () => {
     try {
       const hasBeenShown = localStorage.getItem(FIRST_LAUNCH_KEY);
       if (!hasBeenShown) {
-        setIsVisible(true);
+        // Small delay for animation smoothness
+        setTimeout(() => setIsVisible(true), 500);
       }
     } catch (e) {
       console.error("Failed to access localStorage", e);
-      // Fallback to show it if localStorage is unavailable
       setIsVisible(true);
     }
   }, []);
@@ -32,22 +34,52 @@ export const FirstLaunchModal: React.FC = () => {
   }
 
   return (
-    <div className="fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-50 animate-fade-in">
-      <div className="bg-slate-800 border border-amber-400/50 shadow-2xl rounded-lg p-6 max-w-sm w-full text-center">
-        <h2 className="text-xl font-bold text-slate-100 mb-4">
-          تم تطوير التطبيق بواسطة
-          <br/>
-          <span className="text-amber-300">الأستاذ هادي الدليمي</span>
-        </h2>
-        <p className="text-slate-300 mb-6">
-          لاتنساني من الدعاء لي ولوالدي
-        </p>
-        <button 
-          onClick={handleClose}
-          className="w-full px-4 py-2 bg-amber-500 text-slate-900 rounded-lg font-bold hover:bg-amber-600 transition-colors"
-        >
-          حسناً
-        </button>
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+      {/* Backdrop with blur */}
+      <div 
+        className="absolute inset-0 bg-slate-900/80 backdrop-blur-sm transition-opacity duration-500 animate-fade-in"
+        onClick={handleClose}
+      ></div>
+
+      {/* Modal Card */}
+      <div className="relative bg-slate-900 w-full max-w-md rounded-3xl p-1 shadow-2xl animate-[fadeIn_0.7s_ease-out_forwards] transform overflow-hidden">
+        
+        {/* Animated Gradient Border effect */}
+        <div className="absolute inset-0 bg-gradient-to-br from-amber-300 via-amber-500 to-amber-700 opacity-20 animate-pulse"></div>
+        
+        <div className="relative bg-slate-900 rounded-[22px] p-8 text-center border border-amber-500/20 overflow-hidden">
+            
+            {/* Decorative background glow */}
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-32 bg-amber-500/10 blur-[50px] rounded-full pointer-events-none"></div>
+
+            <div className="relative z-10 flex flex-col items-center">
+                <div className="w-16 h-16 bg-gradient-to-br from-amber-400 to-amber-600 rounded-full flex items-center justify-center shadow-lg shadow-amber-500/20 mb-6">
+                    <Sparkles className="w-8 h-8 text-white" />
+                </div>
+
+                <h2 className="text-slate-400 text-sm font-medium tracking-wide mb-2">تمت البرمجة بواسطة</h2>
+                
+                <h1 className="text-3xl sm:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-400 to-amber-200 font-serif mb-6 drop-shadow-sm">
+                    الأستاذ هادي الدليمي
+                </h1>
+
+                <div className="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl p-5 mb-8 relative group">
+                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-slate-900 px-2 text-amber-500">
+                        <HeartHandshake className="w-6 h-6" />
+                    </div>
+                    <p className="text-slate-300 font-ui text-xl leading-relaxed italic">
+                        "لا تنساني من الدعاء لي ولوالدي"
+                    </p>
+                </div>
+
+                <button 
+                    onClick={handleClose}
+                    className="w-full py-3.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-900 font-bold rounded-xl shadow-lg shadow-amber-500/20 transition-all transform hover:scale-[1.02] active:scale-95"
+                >
+                    ابدأ الرحلة
+                </button>
+            </div>
+        </div>
       </div>
     </div>
   );
