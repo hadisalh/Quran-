@@ -47,11 +47,19 @@ const ChatPlaceholder: React.FC = () => (
     </div>
 );
 
+// Loading state messages
+const loadingStates = [
+    "جارٍ تحليل مشاعرك...",
+    "البحث في آيات الكتاب الحكيم...",
+    "استخراج معاني التدبر...",
+    "صياغة الوصفة الإيمانية..."
+];
 
 export const ChatView: React.FC<ChatViewProps> = ({ addToJournal }) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [loadingText, setLoadingText] = useState(loadingStates[0]);
   const messagesEndRef = useRef<null | HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -60,6 +68,17 @@ export const ChatView: React.FC<ChatViewProps> = ({ addToJournal }) => {
 
   useEffect(scrollToBottom, [messages, isLoading]);
 
+  // Loading text cycler
+  useEffect(() => {
+      if (!isLoading) return;
+      let index = 0;
+      const interval = setInterval(() => {
+          index = (index + 1) % loadingStates.length;
+          setLoadingText(loadingStates[index]);
+      }, 2000);
+      return () => clearInterval(interval);
+  }, [isLoading]);
+
   const handleSubmit = async (text: string) => {
     if (!text.trim() || isLoading) return;
     
@@ -67,6 +86,7 @@ export const ChatView: React.FC<ChatViewProps> = ({ addToJournal }) => {
     setMessages(prev => [...prev, userMessage]);
     
     setIsLoading(true);
+    setLoadingText(loadingStates[0]);
     setError(null);
 
     try {
@@ -111,7 +131,12 @@ export const ChatView: React.FC<ChatViewProps> = ({ addToJournal }) => {
                     })
                 )}
                 
-                {isLoading && <AiTypingBubble />}
+                {isLoading && (
+                    <div className="flex flex-col items-start gap-2 animate-fade-in">
+                        <AiTypingBubble />
+                        <span className="text-xs text-slate-400 mr-14 animate-pulse">{loadingText}</span>
+                    </div>
+                )}
                 {error && <ErrorMessageBubble message={error} />}
                 
                 <div ref={messagesEndRef} className="h-4" />
