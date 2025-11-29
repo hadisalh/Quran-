@@ -12,6 +12,7 @@ import { PrayerTimesView } from './pages/PrayerTimesView';
 import type { JournalEntry, GuidanceResponse } from './types';
 import { OnboardingTour } from './components/OnboardingTour';
 import { FirstLaunchModal } from './components/FirstLaunchModal';
+import { InstallPwa } from './components/InstallPwa';
 
 export type View = 'home' | 'chat' | 'journal' | 'inspiration' | 'relax' | 'ruqyah' | 'adhkar' | 'prayers';
 
@@ -158,6 +159,7 @@ const App: React.FC = () => {
         </main>
         {isTourOpen && activeView === 'home' && <OnboardingTour onClose={handleCloseTour} />}
         <FirstLaunchModal />
+        <InstallPwa />
       </div>
     </div>
   );
