@@ -5,21 +5,19 @@ const apiKey = process.env.API_KEY;
 const ai = new GoogleGenAI({ apiKey: apiKey || "DUMMY_KEY" });
 
 const systemInstruction = `
-الدور: أنت باحث فقهي ومفتي رقمي.
-الأدوات: لديك صلاحية الوصول لـ Google Search. استخدمها **دائماً** للبحث عن أدلة ومصادر موثوقة للإجابة على سؤال المستخدم.
+الدور: أنت مساعد بحثي ذكي متخصص في العلوم الإسلامية ولست مفتياً.
+المهمة: البحث عن المعلومات الدينية وجمع أقوال العلماء في المسألة المطروحة بأسلوب موضوعي.
 
-المهمة:
-أجب عن أي سؤال ديني يطرحه المستخدم. لا تعتذر عن الإجابة. قدم المعلومات بأسلوب فقهي مقارن (أهل السنة والشيعة) إذا كانت المسألة خلافية، أو اذكر الحكم العام إذا كانت متفق عليها.
+الضوابط الصارمة:
+1. **عدم انتحال الصفة:** لا تقل "أفتيك بكذا" أو "رأيي هو". بل قل "ذهب العلماء إلى..." أو "تشير المصادر إلى...".
+2. **الموضوعية:** اعرض الآراء المختلفة (خاصة المذاهب الأربعة والآراء المعتبرة الأخرى) دون تحيز.
+3. **التوثيق:** استخدم بحث Google (Google Search) للعثور على المصادر الموثوقة.
+4. **الشمولية:** أجب عن أي سؤال ديني، عقائدي، أو تاريخي يطرحه المستخدم. لا تعتذر عن الإجابة، بل قدم ما وجدته من معلومات بحثية.
 
-التنسيق المطلوب للإجابة (التزم به بدقة):
-
-[اكتب الإجابة التفصيلية هنا، مع ذكر الأدلة من الكتاب والسنة]
-
----المصادر---
-[سيقوم النظام بإدراج الروابط هنا، لكن يمكنك ذكر أسماء الكتب هنا]
-
----تنبيه---
-[اكتب التنبيه الشرعي هنا]
+الهيكل المفضل للإجابة:
+- مقدمة بسيطة.
+- عرض الأقوال الفقهية أو المعلومات المتاحة.
+- ذكر المصادر إن وجدت.
 `;
 
 function formatDatabaseEntry(entry: FiqhEntry): string {
@@ -39,21 +37,14 @@ ${entry.answer.summary}
 
 ---المصادر---
 ${entry.sources.map(s => `- ${s}`).join('\n')}
-
----تنبيه---
-هذه المعلومات من قاعدة البيانات الموثقة لغرض الثقافة الفقهية المقارنة. للفتوى العملية، راجع المرجع الديني المختص.
     `.trim();
 }
 
 function getGeneralFallbackResponse(): string {
     return `
-تعذر الاتصال بالخادم للحصول على إجابة بحثية دقيقة.
+تعذر الاتصال بخوادم البحث حالياً.
 
-**نصيحة عامة:**
-في المسائل الشرعية، الأصل هو الرجوع لأهل الذكر. 
-
----تنبيه---
-يرجى التحقق من اتصال الإنترنت للحصول على إجابة موثقة بالمصادر.
+يرجى التأكد من اتصال الإنترنت والمحاولة مرة أخرى.
     `.trim();
 }
 
@@ -62,7 +53,7 @@ export async function getConsultation(userInput: string): Promise<string> {
   try {
     const response = await ai.models.generateContent({
       model: "gemini-2.5-flash",
-      contents: `سؤال المستخدم: ${userInput}`,
+      contents: `سؤال المستخدم للبحث: ${userInput}`,
       config: {
         temperature: 0.3, 
         systemInstruction: systemInstruction,
@@ -94,37 +85,28 @@ export async function getConsultation(userInput: string): Promise<string> {
         }
     }
 
-    // Append sources if not present or nicely format them
+    // Append sources nicely
     if (sourcesText) {
         if (!text.includes("---المصادر---")) {
              text += "\n\n---المصادر---\n" + sourcesText;
         } else {
-             // Inject into existing section if model tried to create one
              text = text.replace("---المصادر---", `---المصادر---\n${sourcesText}\n`);
         }
     }
     
-    // Ensure Warning exists
-    if (!text.includes("---تنبيه---")) {
-        text += "\n\n---تنبيه---\nهذه المعلومات للبحث والثقافة الفقهية. للفتوى العملية، يرجى مراجعة المرجع الديني المختص.";
-    }
-
     if (text) return text;
     throw new Error("No response text");
 
   } catch (error: any) {
     console.warn("Consultation API error", error);
     
-    // 2. Retry without Search (Knowledge Fallback) if error was tool-related
-    // Note: We skip this to go straight to Local DB for speed/reliability if offline.
-    
-    // 3. Fallback: Local Database (Offline/Specific Topics)
+    // 2. Fallback: Local Database (Only if API fails)
     const localMatch = searchFiqhDatabase(userInput);
     if (localMatch) {
         return formatDatabaseEntry(localMatch);
     }
 
-    // 4. Ultimate Fallback
+    // 3. Ultimate Fallback
     return getGeneralFallbackResponse();
   }
 }
