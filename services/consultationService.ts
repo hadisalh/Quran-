@@ -6,28 +6,20 @@ const ai = new GoogleGenAI({ apiKey: apiKey || "DUMMY_KEY" });
 
 const systemInstruction = `
 الدور: أنت باحث فقهي ومفتي رقمي.
-الأدوات: لديك صلاحية الوصول لـ Google Search. استخدمها **دائماً** للبحث عن أدلة ومصادر موثوقة.
+الأدوات: لديك صلاحية الوصول لـ Google Search. استخدمها **دائماً** للبحث عن أدلة ومصادر موثوقة للإجابة على سؤال المستخدم.
 
 المهمة:
-أجب عن سؤال المستخدم بدقة فقهية ومقارنة (سنة وشيعة) إذا لزم الأمر.
+أجب عن أي سؤال ديني يطرحه المستخدم. لا تعتذر عن الإجابة. قدم المعلومات بأسلوب فقهي مقارن (أهل السنة والشيعة) إذا كانت المسألة خلافية، أو اذكر الحكم العام إذا كانت متفق عليها.
 
-التنسيق المطلوب للإجابة (التزم به لضمان عمل التطبيق):
+التنسيق المطلوب للإجابة (التزم به بدقة):
 
-1. ابدأ بالإجابة المباشرة والتفصيل الفقهي.
-2. استخدم فاصل واضح جداً للمصادر وهو: "---المصادر---"
-3. ضع المصادر والروابط تحت هذا الفاصل.
-4. استخدم فاصل واضح للتنبيه وهو: "---تنبيه---"
-5. ضع التنبيه الشرعي في النهاية.
-
-مثال:
-[تفاصيل الإجابة...]
+[اكتب الإجابة التفصيلية هنا، مع ذكر الأدلة من الكتاب والسنة]
 
 ---المصادر---
-[مصدر 1](رابط)
-[مصدر 2](رابط)
+[سيقوم النظام بإدراج الروابط هنا، لكن يمكنك ذكر أسماء الكتب هنا]
 
 ---تنبيه---
-هذه المعلومات للثقافة العامة.
+[اكتب التنبيه الشرعي هنا]
 `;
 
 function formatDatabaseEntry(entry: FiqhEntry): string {
@@ -55,10 +47,10 @@ ${entry.sources.map(s => `- ${s}`).join('\n')}
 
 function getGeneralFallbackResponse(): string {
     return `
-المسألة التي سألت عنها تتطلب بحثاً دقيقاً، وتعذر الوصول إلى المصادر الحية حالياً.
+تعذر الاتصال بالخادم للحصول على إجابة بحثية دقيقة.
 
 **نصيحة عامة:**
-استفتِ قلبك، وإن أفتاك الناس وأفتوك. الأصل في الأشياء الإباحة ما لم يرد نص بالتحريم.
+في المسائل الشرعية، الأصل هو الرجوع لأهل الذكر. 
 
 ---تنبيه---
 يرجى التحقق من اتصال الإنترنت للحصول على إجابة موثقة بالمصادر.
@@ -66,14 +58,7 @@ function getGeneralFallbackResponse(): string {
 }
 
 export async function getConsultation(userInput: string): Promise<string> {
-  // 1. Try Local Database First (Fast Path)
-  const localMatch = searchFiqhDatabase(userInput);
-  if (localMatch) {
-    await new Promise(resolve => setTimeout(resolve, 600)); 
-    return formatDatabaseEntry(localMatch);
-  }
-
-  // 2. Try Gemini API with Google Search
+  // 1. Try Gemini API with Google Search (Priority: Online & Comprehensive)
   try {
     const response = await ai.models.generateContent({
       model: "gemini-2.5-flash",
@@ -96,6 +81,7 @@ export async function getConsultation(userInput: string): Promise<string> {
     // Process Grounding Chunks (Google Search Results)
     const groundingChunks = response.candidates?.[0]?.groundingMetadata?.groundingChunks;
     
+    let sourcesText = "";
     if (groundingChunks && groundingChunks.length > 0) {
         // Extract Web Sources
         const webSources = groundingChunks
@@ -103,33 +89,42 @@ export async function getConsultation(userInput: string): Promise<string> {
             .map(c => `- [${c.web?.title}](${c.web?.uri})`);
             
         const uniqueSources = [...new Set(webSources)];
-
         if (uniqueSources.length > 0) {
-            // Check if model already added the separator
-            if (!text.includes("---المصادر---")) {
-                 text += "\n\n---المصادر---\n" + uniqueSources.join("\n");
-            } else {
-                 // Append to existing sources
-                 const parts = text.split("---المصادر---");
-                 text = parts[0] + "\n---المصادر---\n" + uniqueSources.join("\n") + "\n" + (parts[1] || "");
-            }
+            sourcesText = uniqueSources.join("\n");
+        }
+    }
+
+    // Append sources if not present or nicely format them
+    if (sourcesText) {
+        if (!text.includes("---المصادر---")) {
+             text += "\n\n---المصادر---\n" + sourcesText;
+        } else {
+             // Inject into existing section if model tried to create one
+             text = text.replace("---المصادر---", `---المصادر---\n${sourcesText}\n`);
         }
     }
     
+    // Ensure Warning exists
+    if (!text.includes("---تنبيه---")) {
+        text += "\n\n---تنبيه---\nهذه المعلومات للبحث والثقافة الفقهية. للفتوى العملية، يرجى مراجعة المرجع الديني المختص.";
+    }
+
     if (text) return text;
     throw new Error("No response text");
 
   } catch (error: any) {
     console.warn("Consultation API error", error);
     
-    // 3. Fallback: Local Search (Fuzzy)
-    const normalizedInput = userInput.replace(/[^\u0621-\u064A\s]/g, '').toLowerCase();
-    for (const entry of fiqhDatabase) {
-        if (entry.keywords.some(k => normalizedInput.includes(k))) {
-            return formatDatabaseEntry(entry);
-        }
+    // 2. Retry without Search (Knowledge Fallback) if error was tool-related
+    // Note: We skip this to go straight to Local DB for speed/reliability if offline.
+    
+    // 3. Fallback: Local Database (Offline/Specific Topics)
+    const localMatch = searchFiqhDatabase(userInput);
+    if (localMatch) {
+        return formatDatabaseEntry(localMatch);
     }
 
+    // 4. Ultimate Fallback
     return getGeneralFallbackResponse();
   }
 }
