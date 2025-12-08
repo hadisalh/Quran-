@@ -9,12 +9,13 @@ import { RuqyahView } from './pages/RuqyahView';
 import { HomeView } from './pages/HomeView';
 import { AdhkarView } from './pages/AdhkarView';
 import { PrayerTimesView } from './pages/PrayerTimesView';
+import { ConsultationView } from './pages/ConsultationView';
 import type { JournalEntry, GuidanceResponse } from './types';
 import { OnboardingTour } from './components/OnboardingTour';
 import { FirstLaunchModal } from './components/FirstLaunchModal';
 import { InstallPwa } from './components/InstallPwa';
 
-export type View = 'home' | 'chat' | 'journal' | 'inspiration' | 'relax' | 'ruqyah' | 'adhkar' | 'prayers';
+export type View = 'home' | 'chat' | 'journal' | 'inspiration' | 'relax' | 'ruqyah' | 'adhkar' | 'prayers' | 'consultation';
 
 const viewLabels: Record<View, string> = {
   home: 'آية ترشدك',
@@ -24,7 +25,8 @@ const viewLabels: Record<View, string> = {
   relax: 'واحة السكينة',
   ruqyah: 'الرقية الشرعية',
   adhkar: 'أدعية وأذكار',
-  prayers: 'أوقات الصلاة'
+  prayers: 'أوقات الصلاة',
+  consultation: 'الاستشارة الإسلامية'
 };
 
 const JOURNAL_STORAGE_KEY = 'ayah-guidance-journal';
@@ -133,6 +135,8 @@ const App: React.FC = () => {
         return <RuqyahView />;
       case 'prayers':
         return <PrayerTimesView />;
+      case 'consultation':
+        return <ConsultationView />;
       default:
         return <HomeView onNavigate={handleViewChange} />;
     }

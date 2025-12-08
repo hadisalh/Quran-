@@ -4,17 +4,21 @@ const apiKey = process.env.API_KEY;
 const ai = new GoogleGenAI({ apiKey: apiKey || "DUMMY_KEY" });
 
 const systemInstruction = `
-Role: Specialized Researcher in Arabic Heritage and History.
-Task: Summarize information from classical Arabic texts (Tarikh, Adab, Sirah).
-Constraint: Keep it concise and neutral. Output in Arabic.
+الدور: أنت مساعد استشاري إسلامي ذكي ومؤدب.
+المهمة: تقديم معلومات شرعية عامة مبنية على القرآن الكريم والسنة النبوية الصحيحة وأقوال العلماء المعتبرين (المذاهب الأربعة).
+تحذير صارم:
+1. أنت لست مفتياً. لا تصدر فتاوى حاسمة في قضايا الطلاق، المواريث المعقدة، أو الدماء.
+2. في القضايا الخلافية، اذكر الآراء بأدب دون تعصب.
+3. يجب أن تختم إجابتك دائماً بعبارة تنصح المستخدم بالرجوع إلى أهل العلم أو دار الإفتاء الرسمية في بلده للتفاصيل الدقيقة.
+4. الأسلوب: هادئ، رصين، ومدعم بالأدلة الشرعية إن وجدت.
 `;
 
-// Simple fallback responses based on keywords
+// Simple fallback responses based on keywords if API fails
 const localResponses: Record<string, string> = {
-    'صبر': "الصبر في التراث العربي والإسلامي مفتاح الفرج. قيل: 'الصبر صبران: صبر على ما تكره، وصبر عما تحب'. وقد مدحت العرب الصبر في أشعارها واعتبرته شيمة النبلاء.",
-    'زواج': "الزواج في الموروث الثقافي والديني يُعد ميثاقاً غليظاً وسكناً للروح. وقد حثت النصوص على حسن الاختيار والمودة والرحمة بين الزوجين.",
-    'علم': "العلم هو أشرف ما يطلبه الإنسان. قال الشافعي: 'من أراد الدنيا فعليه بالعلم، ومن أراد الآخرة فعليه بالعلم'.",
-    'default': "عذراً، يبدو أن الاتصال بالمكتبة الرقمية غير متاح حالياً. لكن بشكل عام، البحث في التراث العربي يتطلب تحديد كلمات مفتاحية دقيقة. يمكنك المحاولة مرة أخرى لاحقاً."
+    'صلاة': "الصلاة هي عماد الدين. حافظ عليها في أوقاتها. للمسائل الدقيقة في السهو أو القضاء، يفضل مراجعة كتب الفقه الميسرة أو سؤال إمام المسجد.",
+    'صيام': "الصيام ركن من أركان الإسلام. إذا كان لديك عذر طبي أو شرعي، يرجى استشارة طبيب ثقة ومفتٍ لتقدير الحالة بدقة.",
+    'زكاة': "الزكاة حق المال. نصابها ربع العشر (2.5%) إذا حال الحول وبلغ النصاب. لحساب زكاة الأسهم أو التجارة المعقدة، استشر مختصاً.",
+    'default': "عذراً، لا يمكنني الوصول إلى قاعدة البيانات الشرعية حالياً. يرجى التأكد من الاتصال بالإنترنت، وأنصحك بسؤال أهل العلم الموثوقين."
 };
 
 function getLocalConsultation(input: string): string {
@@ -29,9 +33,9 @@ export async function getConsultation(userInput: string): Promise<string> {
   try {
     const response = await ai.models.generateContent({
       model: "gemini-2.5-flash",
-      contents: `Research Topic: ${userInput}`,
+      contents: `سؤال المستخدم: ${userInput}`,
       config: {
-        temperature: 0.3,
+        temperature: 0.4, // Lower temperature for more deterministic/conservative answers
         systemInstruction: systemInstruction,
         safetySettings: [
             { category: 'HARM_CATEGORY_HATE_SPEECH', threshold: 'BLOCK_NONE' },

@@ -5,7 +5,7 @@ import { AiConsultationBubble } from '../components/AiConsultationBubble';
 import { AiConsultantTypingBubble } from '../components/AiConsultantTypingBubble';
 import { ErrorMessageBubble } from '../components/ErrorMessageBubble';
 import { getConsultation } from '../services/consultationService';
-import { Scale } from '../components/icons';
+import { Scale, TriangleAlert, Check } from '../components/icons';
 
 interface Message {
   type: 'user' | 'ai';
@@ -14,22 +14,62 @@ interface Message {
 }
 
 const ConsultationPlaceholder: React.FC = () => (
-    <div className="flex flex-col items-center justify-center h-full text-center text-slate-400 p-4">
-        <Scale className="w-16 h-16 mb-4 text-slate-500"/>
-        <h2 className="text-2xl font-bold text-slate-200 mb-2">الباحث التراثي</h2>
-        <p className="max-w-md">
-            هنا يمكنك البحث عن المعلومات في أمهات الكتب والمصادر التاريخية. سيقوم "الباحث الآلي" باستخراج النصوص من المكتبة التراثية.
+    <div className="flex flex-col items-center justify-center h-full text-center p-6 animate-fade-in">
+        <div className="w-24 h-24 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center mb-6 shadow-inner relative overflow-hidden group">
+            <Scale className="w-12 h-12 text-slate-500 dark:text-slate-400 group-hover:scale-110 transition-transform duration-500"/>
+        </div>
+        <h2 className="text-3xl font-bold text-slate-800 dark:text-slate-100 mb-3 font-serif">الاستشارة الإسلامية</h2>
+        <p className="max-w-md text-slate-600 dark:text-slate-300 text-lg leading-relaxed mb-8">
+            اسأل عن المسائل الشرعية العامة، وسأجيبك بما يتوافق مع الكتاب والسنة، مع مراعاة أن الفتاوى الخاصة تتطلب عالماً مؤهلاً.
         </p>
-        <p className="max-w-md w-full mt-4 text-sm bg-slate-800/50 p-3 rounded-lg border border-slate-700">
-            <strong>جرب أن تبحث:</strong> "ماذا قيل في الصبر؟"
-        </p>
+        <div className="grid grid-cols-1 gap-3 w-full max-w-lg">
+            {["ما هي شروط الصلاة؟", "كيف أحسب زكاة المال؟", "فضائل شهر رمضان", "أحكام صلة الرحم"].map((suggestion, idx) => (
+                <div key={idx} className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-3 rounded-xl text-sm text-slate-500 dark:text-slate-400 text-center shadow-sm select-none opacity-80 hover:opacity-100 transition-opacity cursor-default">
+                    "{suggestion}"
+                </div>
+            ))}
+        </div>
     </div>
 );
+
+const DisclaimerModal: React.FC<{ onAccept: () => void }> = ({ onAccept }) => {
+    return (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/80 backdrop-blur-sm animate-fade-in">
+            <div className="bg-white dark:bg-slate-900 border-2 border-amber-500 rounded-2xl p-6 sm:p-8 max-w-md w-full shadow-2xl relative overflow-hidden">
+                <div className="flex flex-col items-center text-center">
+                    <div className="w-16 h-16 bg-amber-100 dark:bg-amber-900/30 rounded-full flex items-center justify-center mb-4">
+                        <TriangleAlert className="w-8 h-8 text-amber-600 dark:text-amber-500" />
+                    </div>
+                    <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">تنبيه وإخلاء مسؤولية</h2>
+                    
+                    <div className="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-xl border border-slate-200 dark:border-slate-700 mb-6 text-right">
+                        <ul className="space-y-3 text-sm text-slate-700 dark:text-slate-300 leading-relaxed list-disc list-inside">
+                            <li>هذه الاستشارة يتم توليدها بواسطة <strong>الذكاء الاصطناعي</strong>.</li>
+                            <li>المعلومات المقدمة هي للغرض <strong>الثقافي والتعليمي فقط</strong>.</li>
+                            <li>هذه الإجابات <strong>قد لا تكون دقيقة 100%</strong> ولا تغني عن فتوى العالم.</li>
+                            <li>نحن لا نمثل جهة إفتاء رسمية.</li>
+                            <li className="font-bold text-amber-600 dark:text-amber-400">للنوازل والمسائل المصيرية (مثل الطلاق والميراث)، يجب مراجعة المفتي أو الجهات الشرعية المعتمدة في بلدك.</li>
+                        </ul>
+                    </div>
+
+                    <button 
+                        onClick={onAccept}
+                        className="w-full flex items-center justify-center gap-2 bg-amber-500 hover:bg-amber-600 text-white dark:text-slate-900 font-bold py-3.5 rounded-xl transition-all shadow-lg hover:shadow-amber-500/20 active:scale-95"
+                    >
+                        <Check className="w-5 h-5" />
+                        <span>قرأت وفهمت، تابع</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+};
 
 export const ConsultationView: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [showDisclaimer, setShowDisclaimer] = useState<boolean>(true);
   const messagesEndRef = useRef<null | HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -64,9 +104,11 @@ export const ConsultationView: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full bg-slate-50 dark:bg-slate-900 relative">
+        {showDisclaimer && <DisclaimerModal onAccept={() => setShowDisclaimer(false)} />}
+        
         <main className="flex-grow flex flex-col overflow-hidden">
-            <div className="flex-grow flex flex-col space-y-6 overflow-y-auto p-4">
+            <div className="flex-grow flex flex-col space-y-6 overflow-y-auto p-4 sm:p-6 scroll-smooth">
                 {messages.length === 0 && !isLoading && !error ? (
                     <ConsultationPlaceholder />
                 ) : (
@@ -82,10 +124,10 @@ export const ConsultationView: React.FC = () => {
                 {isLoading && <AiConsultantTypingBubble />}
                 {error && <ErrorMessageBubble message={error} />}
                 
-                <div ref={messagesEndRef} />
+                <div ref={messagesEndRef} className="h-4" />
             </div>
           
-            <div className="p-4 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-700/50">
+            <div className="p-4 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-t border-slate-200 dark:border-slate-700/50 shadow-lg z-10">
                 <ChatInput onSubmit={handleSubmit} isLoading={isLoading} />
             </div>
         </main>
