@@ -18,12 +18,12 @@ const ConsultationPlaceholder: React.FC = () => (
         <div className="w-24 h-24 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center mb-6 shadow-inner relative overflow-hidden group">
             <Scale className="w-12 h-12 text-slate-500 dark:text-slate-400 group-hover:scale-110 transition-transform duration-500"/>
         </div>
-        <h2 className="text-3xl font-bold text-slate-800 dark:text-slate-100 mb-3 font-serif">الاستشارة الإسلامية</h2>
+        <h2 className="text-3xl font-bold text-slate-800 dark:text-slate-100 mb-3 font-serif">الاستشارة الفقهية المقارنة</h2>
         <p className="max-w-md text-slate-600 dark:text-slate-300 text-lg leading-relaxed mb-8">
-            اسأل عن المسائل الشرعية العامة، وسأجيبك بما يتوافق مع الكتاب والسنة، مع مراعاة أن الفتاوى الخاصة تتطلب عالماً مؤهلاً.
+            اسأل عن المسائل الشرعية، وسأعرض لك أقوال المذاهب الإسلامية (السنية والشيعية) بموضوعية، لغرض الثقافة والمعرفة.
         </p>
         <div className="grid grid-cols-1 gap-3 w-full max-w-lg">
-            {["ما هي شروط الصلاة؟", "كيف أحسب زكاة المال؟", "فضائل شهر رمضان", "أحكام صلة الرحم"].map((suggestion, idx) => (
+            {["حكم الجمع بين الصلوات؟", "كيفية حساب زكاة الفطر؟", "مبطلات الصيام المعاصرة", "أحكام الميراث العامة"].map((suggestion, idx) => (
                 <div key={idx} className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-3 rounded-xl text-sm text-slate-500 dark:text-slate-400 text-center shadow-sm select-none opacity-80 hover:opacity-100 transition-opacity cursor-default">
                     "{suggestion}"
                 </div>
@@ -45,10 +45,9 @@ const DisclaimerModal: React.FC<{ onAccept: () => void }> = ({ onAccept }) => {
                     <div className="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-xl border border-slate-200 dark:border-slate-700 mb-6 text-right">
                         <ul className="space-y-3 text-sm text-slate-700 dark:text-slate-300 leading-relaxed list-disc list-inside">
                             <li>هذه الاستشارة يتم توليدها بواسطة <strong>الذكاء الاصطناعي</strong>.</li>
-                            <li>المعلومات المقدمة هي للغرض <strong>الثقافي والتعليمي فقط</strong>.</li>
-                            <li>هذه الإجابات <strong>قد لا تكون دقيقة 100%</strong> ولا تغني عن فتوى العالم.</li>
-                            <li>نحن لا نمثل جهة إفتاء رسمية.</li>
-                            <li className="font-bold text-amber-600 dark:text-amber-400">للنوازل والمسائل المصيرية (مثل الطلاق والميراث)، يجب مراجعة المفتي أو الجهات الشرعية المعتمدة في بلدك.</li>
+                            <li>المعلومات تعرض آراء <strong>كافة المذاهب (السنية والشيعية)</strong> للغرض التعليمي.</li>
+                            <li>هذه الإجابات <strong>لا تغني عن الرجوع للمرجع أو المفتي</strong>.</li>
+                            <li className="font-bold text-amber-600 dark:text-amber-400">للنوازل والمسائل المصيرية (مثل الطلاق)، يجب مراجعة الجهات الشرعية المعتمدة أو مرجع تقليدك.</li>
                         </ul>
                     </div>
 
