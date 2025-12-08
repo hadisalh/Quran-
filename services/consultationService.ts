@@ -5,29 +5,29 @@ const apiKey = process.env.API_KEY;
 const ai = new GoogleGenAI({ apiKey: apiKey || "DUMMY_KEY" });
 
 const systemInstruction = `
-الدور: أنت باحث فقهي ومفتي رقمي متخصص في الفقه المقارن.
-لديك صلاحية الوصول للإنترنت عبر أداة البحث. استخدمها دائماً للتحقق من المعلومات من المصادر الإسلامية الموثوقة (مثل المواقع الرسمية للإفتاء، المكتبات الشاملة، ومواقع المرجعيات المعتبرة).
+الدور: أنت باحث فقهي ومفتي رقمي.
+الأدوات: لديك صلاحية الوصول لـ Google Search. استخدمها **دائماً** للبحث عن أدلة ومصادر موثوقة.
 
-المهمة: الإجابة على **أي سؤال** شرعي أو عقائدي يطرحه المستخدم بأسلوب مقارن وشامل.
+المهمة:
+أجب عن سؤال المستخدم بدقة فقهية ومقارنة (سنة وشيعة) إذا لزم الأمر.
 
-هيكل الإجابة المطلوب:
+التنسيق المطلوب للإجابة (التزم به لضمان عمل التطبيق):
 
-1. **المقدمة**: أصل المسألة من القرآن أو السنة.
+1. ابدأ بالإجابة المباشرة والتفصيل الفقهي.
+2. استخدم فاصل واضح جداً للمصادر وهو: "---المصادر---"
+3. ضع المصادر والروابط تحت هذا الفاصل.
+4. استخدم فاصل واضح للتنبيه وهو: "---تنبيه---"
+5. ضع التنبيه الشرعي في النهاية.
 
-2. **التفصيل الفقهي**:
-   - **عند أهل السنة**: ذكر آراء المذاهب الأربعة باختصار.
-   - **عند الشيعة الإمامية**: ذكر رأي المذهب الجعفري.
+مثال:
+[تفاصيل الإجابة...]
 
-3. **📚 المصادر والمراجع**:
-   - اذكر المصادر التي اعتمدت عليها في البحث.
+---المصادر---
+[مصدر 1](رابط)
+[مصدر 2](رابط)
 
-4. **تنبيه**:
-   "⚠️ **تنبيه هام**: هذه المعلومات للبحث والثقافة الفقهية. للفتوى العملية، يرجى مراجعة المرجع الديني المختص."
-
-ضوابط:
-- الحياد التام.
-- في القضايا الحساسة، انقل الفتوى كما هي من المصدر الموثوق.
-- إذا لم تجد معلومة دقيقة، صرح بذلك.
+---تنبيه---
+هذه المعلومات للثقافة العامة.
 `;
 
 function formatDatabaseEntry(entry: FiqhEntry): string {
@@ -45,10 +45,11 @@ ${entry.answer.shiaView}
 💡 **الخلاصة:**
 ${entry.answer.summary}
 
-📚 **المصادر والمراجع:**
+---المصادر---
 ${entry.sources.map(s => `- ${s}`).join('\n')}
 
-⚠️ **تنبيه هام**: هذه المعلومات من قاعدة البيانات الموثقة لغرض الثقافة الفقهية المقارنة. للفتوى العملية، راجع المرجع الديني المختص.
+---تنبيه---
+هذه المعلومات من قاعدة البيانات الموثقة لغرض الثقافة الفقهية المقارنة. للفتوى العملية، راجع المرجع الديني المختص.
     `.trim();
 }
 
@@ -59,20 +60,20 @@ function getGeneralFallbackResponse(): string {
 **نصيحة عامة:**
 استفتِ قلبك، وإن أفتاك الناس وأفتوك. الأصل في الأشياء الإباحة ما لم يرد نص بالتحريم.
 
-⚠️ **تنبيه هام**: يرجى التحقق من اتصال الإنترنت للحصول على إجابة موثقة بالمصادر.
+---تنبيه---
+يرجى التحقق من اتصال الإنترنت للحصول على إجابة موثقة بالمصادر.
     `.trim();
 }
 
 export async function getConsultation(userInput: string): Promise<string> {
-  // 1. Try Local Database First (Fast Path for common questions)
+  // 1. Try Local Database First (Fast Path)
   const localMatch = searchFiqhDatabase(userInput);
   if (localMatch) {
-    console.log("Found in local fiqh database:", localMatch.id);
     await new Promise(resolve => setTimeout(resolve, 600)); 
     return formatDatabaseEntry(localMatch);
   }
 
-  // 2. Try Gemini API with Google Search (For all other topics)
+  // 2. Try Gemini API with Google Search
   try {
     const response = await ai.models.generateContent({
       model: "gemini-2.5-flash",
@@ -80,7 +81,6 @@ export async function getConsultation(userInput: string): Promise<string> {
       config: {
         temperature: 0.3, 
         systemInstruction: systemInstruction,
-        // Enable Google Search Grounding to access trusted sources
         tools: [{googleSearch: {}}],
         safetySettings: [
             { category: 'HARM_CATEGORY_HATE_SPEECH', threshold: 'BLOCK_NONE' },
@@ -93,24 +93,25 @@ export async function getConsultation(userInput: string): Promise<string> {
     
     let text = response.text || "";
     
-    // Extract Grounding Chunks (Sources from Google Search)
+    // Process Grounding Chunks (Google Search Results)
     const groundingChunks = response.candidates?.[0]?.groundingMetadata?.groundingChunks;
     
     if (groundingChunks && groundingChunks.length > 0) {
-        // Extract unique web sources with titles and URIs
+        // Extract Web Sources
         const webSources = groundingChunks
             .filter(c => c.web)
-            .map(c => `[${c.web?.title}](${c.web?.uri})`);
+            .map(c => `- [${c.web?.title}](${c.web?.uri})`);
             
         const uniqueSources = [...new Set(webSources)];
 
         if (uniqueSources.length > 0) {
-            // Append sources to the text in a Markdown link format
-            // If the model already added a "Sources" header, we append to it, otherwise create it.
-            if (text.includes("📚 المصادر والمراجع") || text.includes("📚 **المصادر والمراجع**")) {
-                 text += "\n" + uniqueSources.map(s => `- ${s}`).join("\n");
+            // Check if model already added the separator
+            if (!text.includes("---المصادر---")) {
+                 text += "\n\n---المصادر---\n" + uniqueSources.join("\n");
             } else {
-                 text += "\n\n📚 **المصادر والمراجع**\n" + uniqueSources.map(s => `- ${s}`).join("\n");
+                 // Append to existing sources
+                 const parts = text.split("---المصادر---");
+                 text = parts[0] + "\n---المصادر---\n" + uniqueSources.join("\n") + "\n" + (parts[1] || "");
             }
         }
     }
@@ -121,7 +122,7 @@ export async function getConsultation(userInput: string): Promise<string> {
   } catch (error: any) {
     console.warn("Consultation API error", error);
     
-    // 3. FALLBACK: Fuzzy Local Search
+    // 3. Fallback: Local Search (Fuzzy)
     const normalizedInput = userInput.replace(/[^\u0621-\u064A\s]/g, '').toLowerCase();
     for (const entry of fiqhDatabase) {
         if (entry.keywords.some(k => normalizedInput.includes(k))) {
@@ -129,7 +130,6 @@ export async function getConsultation(userInput: string): Promise<string> {
         }
     }
 
-    // 4. Ultimate Fallback
     return getGeneralFallbackResponse();
   }
 }
