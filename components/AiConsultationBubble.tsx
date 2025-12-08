@@ -6,7 +6,7 @@ interface AiConsultationBubbleProps {
 }
 
 export const AiConsultationBubble: React.FC<AiConsultationBubbleProps> = ({ text }) => {
-  // Split text to separate Sources if possible for better styling
+  // Split text to separate Sources
   const parts = text.split('📚 **المصادر والمراجع**');
   const mainContent = parts[0];
   const sourcesContent = parts.length > 1 ? parts[1] : null;
@@ -31,6 +31,42 @@ export const AiConsultationBubble: React.FC<AiConsultationBubbleProps> = ({ text
   // Clean up formatting
   const cleanMain = contentWithoutWarning.replace('⚠️ **تنبيه هام**', '').trim();
   const cleanSources = sourcesContent ? sourcesContent.split('⚠️ **تنبيه هام**')[0].replace(':', '').trim() : null;
+  const cleanWarning = warningContent.replace(':', '').trim();
+
+  // Helper function to render text with Markdown links [Title](URL)
+  const renderContentWithLinks = (content: string) => {
+    // Regex to match [text](url)
+    const regex = /\[([^\]]+)\]\(([^)]+)\)/g;
+    const elements = [];
+    let lastIndex = 0;
+    let match;
+
+    while ((match = regex.exec(content)) !== null) {
+      // Text before the link
+      if (match.index > lastIndex) {
+        elements.push(content.substring(lastIndex, match.index));
+      }
+      // The link itself
+      elements.push(
+        <a 
+          key={match.index} 
+          href={match[2]} 
+          target="_blank" 
+          rel="noopener noreferrer" 
+          className="text-amber-400 hover:text-amber-300 underline decoration-amber-500/30 underline-offset-4 transition-colors mx-1"
+        >
+          {match[1]}
+        </a>
+      );
+      lastIndex = regex.lastIndex;
+    }
+    // Remaining text
+    if (lastIndex < content.length) {
+      elements.push(content.substring(lastIndex));
+    }
+    
+    return elements.length > 0 ? elements : content;
+  };
 
   return (
     <div className="flex items-start justify-start gap-3 animate-fade-in">
@@ -41,7 +77,7 @@ export const AiConsultationBubble: React.FC<AiConsultationBubbleProps> = ({ text
       <div className="bg-slate-800 rounded-xl rounded-bl-none p-5 w-full max-w-2xl border border-slate-700 shadow-lg">
         <div className="flex items-center gap-2 mb-4 border-b border-slate-700 pb-2">
              <span className="font-bold text-amber-400 text-sm">الباحث الفقهي</span>
-             <span className="text-xs bg-slate-700 px-2 py-0.5 rounded text-slate-300">مقارن</span>
+             <span className="text-xs bg-slate-700 px-2 py-0.5 rounded text-slate-300">موثق بمصادر</span>
         </div>
 
         {/* Main Content */}
@@ -57,7 +93,7 @@ export const AiConsultationBubble: React.FC<AiConsultationBubbleProps> = ({ text
                     <span>المصادر والمراجع المعتمدة:</span>
                 </div>
                 <div className="text-slate-400 text-sm leading-relaxed whitespace-pre-wrap">
-                    {cleanSources}
+                    {renderContentWithLinks(cleanSources)}
                 </div>
             </div>
         )}
@@ -66,7 +102,7 @@ export const AiConsultationBubble: React.FC<AiConsultationBubbleProps> = ({ text
         <div className="mt-4 pt-4 border-t border-slate-700/50 text-xs text-amber-500/80 flex gap-2 items-start">
              <span className="mt-0.5">⚠️</span>
              <p>
-                {warningContent.replace(':', '').trim() || "هذه المعلومات لغرض الثقافة الفقهية المقارنة. الأحكام قد تختلف بدقة حسب حالتك. للحصول على فتوى تبرأ بها الذمة، استشر المرجع الديني المختص."}
+                {cleanWarning || "هذه المعلومات لغرض الثقافة الفقهية المقارنة. الأحكام قد تختلف بدقة حسب حالتك. للحصول على فتوى تبرأ بها الذمة، استشر المرجع الديني المختص."}
              </p>
         </div>
       </div>
